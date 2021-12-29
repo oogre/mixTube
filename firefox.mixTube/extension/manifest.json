@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "bcksp.es",
-  "version": "2.0.1.2",
-  "description": "We archive the text you erase.",
+  "name": "mixTube",
+  "version": "0.0.0.1",
+  "description": "Tools to mix your youtube parties",
   "author" : "Vincent Evrard",
   "content_scripts": [
     {
@@ -22,16 +22,16 @@
     }
   },
   "icons": { 
-    "48": "images/48.ExtIcon_Loggedin_Whitelisted.png",
-    "128": "images/128.ExtIcon_Loggedin_Whitelisted.png"
+    "48": "images/mixTube.48.png",
+    "128": "images/mixTube.128.png"
   },
   "browser_action": {
     "browser_style": true,
     "default_icon": {
-      "19": "images/19.ExtIcon_Loggedin_Whitelisted.png",
-      "38": "images/38.ExtIcon_Loggedin_Whitelisted.png",
-      "48": "images/48.ExtIcon_Loggedin_Whitelisted.png",
-      "128": "images/128.ExtIcon_Loggedin_Whitelisted.png"
+      "19": "images/mixTube.19.png",
+      "38": "images/mixTube.38.png",
+      "48": "images/mixTube.48.png",
+      "128": "images/mixTube.128.png"
     },
     "default_title": "bcksp.es"
   },
