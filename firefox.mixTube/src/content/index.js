@@ -2,7 +2,7 @@
   runtime-examples - content.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-28 03:12:11
-  @Last Modified time: 2021-12-29 01:17:26
+  @Last Modified time: 2021-12-30 20:06:37
 \*----------------------------------------*/
 import {onReady} from './../utilities/onReady.js';
 import { on, sendMessage } from './../utilities/com.js';
@@ -17,14 +17,14 @@ Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
     }
 });
 const callBackground = (action, event) => {
-	//console.log(event);
 	sendMessage(action, buildInfo())
-	.then(()=>{})
-	.catch(()=>{});
+		.then(()=>{})
+		.catch(()=>{});
 }
 const getMedia = () => document.querySelector("video");
 const getTitle = () => document.querySelector("h1.ytd-video-primary-info-renderer").innerText;
 const buildInfo = () => {
+	
 	const media = getMedia();
 	return { 
 		title : getTitle(),
@@ -73,27 +73,26 @@ on("speed", (data, resolve) =>{
 	getMedia().playbackRate = data.playbackRate;
 	resolve(true);
 });
-const EventHandler = event => callBackground("updateMedia", event);
-
 
 onReady( async ()=>{
 	const location = window.location.toString();
 
+
 	if((/youtube\.com\/watch/ig).test(location)){
+
 		if(!document.querySelector("h1.ytd-video-primary-info-renderer")){
 			await onDomChange("body", "h1.ytd-video-primary-info-renderer")
 		}
+
 		const media = document.querySelector("video");
 		if(media){
-			media.addEventListener('play', EventHandler);
-			media.addEventListener('pause', EventHandler);
-			media.addEventListener('ended', EventHandler);
-			media.addEventListener('volumechange', EventHandler);
-			media.addEventListener('ratechange', EventHandler);
-			media.addEventListener('timeupdate', EventHandler);
-			window.addEventListener("beforeunload", (event) => {
-				callBackground("deleteMedia");
-			});
+			media.addEventListener('play', () => callBackground("updateMedia"));
+			media.addEventListener('pause', () => callBackground("updateMedia"));
+			media.addEventListener('ended', () => callBackground("updateMedia"));
+			media.addEventListener('volumechange', () => callBackground("updateMedia"));
+			media.addEventListener('ratechange', () => callBackground("updateMedia"));
+			media.addEventListener('timeupdate', () => callBackground("updateMedia"));
+			window.addEventListener("beforeunload", () => callBackground("deleteMedia"));
 			callBackground("newMedia");	
 		}
 	}

@@ -2,17 +2,15 @@
   mixTube - marquee.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-29 12:47:17
-  @Last Modified time: 2021-12-29 13:28:14
+  @Last Modified time: 2021-12-30 18:58:01
 \*----------------------------------------*/
 import React from 'react';
 import useAnimationFrame from './../utilities/useAnimationFrame.js'
 
-const Marquee = ({text}) => {
+const Marquee = ({text, run}) => {
 	// console.log(tarcklist);
 	const [step, setStep] = React.useState(0)
 	const [offsetMax, setOffsetMax] = React.useState(100)
-	const [running, setRunning] = React.useState(0);
-	const margin = 20;
 	const myRef = React.useRef();
 
 	useAnimationFrame(time => {
@@ -23,7 +21,6 @@ const Marquee = ({text}) => {
 	const getSize = ()=>{
 		const selfWidth = myRef.current.clientWidth;
 		const parentWidth = myRef.current.parentElement.clientWidth;
-		setRunning(selfWidth > parentWidth ? 1 : 0);
 		setOffsetMax(100 - (parentWidth / selfWidth) * 100);	
 	}
 	React.useEffect(() => {
@@ -32,11 +29,9 @@ const Marquee = ({text}) => {
   	}, []);
 
 
-	const offset = -1 * (Math.sin(step*0.01) * 0.5 + 0.5) * offsetMax * running;
+	const offset = -1 * (Math.sin(step*0.01) * 0.5 + 0.5) * offsetMax * run;
 	return (
 		<span ref={myRef} style={{
-			padding : `0 ${margin}px`,
-			display: "inline-block",
 			transform: `translate(${offset}%, 0)`
 		}}>
 		{
