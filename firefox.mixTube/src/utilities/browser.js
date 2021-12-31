@@ -2,7 +2,7 @@
   bcksp.es - browser.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2019-01-04 14:29:49
-  @Last Modified time: 2020-02-20 21:14:59
+  @Last Modified time: 2021-12-30 21:48:29
 \*----------------------------------------*/
 import { isNull, isUndefined, isFunction } from 'underscore';
 
@@ -20,6 +20,10 @@ export async function tabsUpdate(req){
 
 export async function tabsCreate(req){
 	return browser.tabs.create(req);	
+}
+
+export async function tabsRemove(req){
+	return browser.tabs.remove(req);	
 }
 
 export async function tabsHighlight(req){

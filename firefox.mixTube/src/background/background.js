@@ -2,7 +2,7 @@
   runtime-examples - background.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-27 23:11:57
-  @Last Modified time: 2021-12-30 20:11:37
+  @Last Modified time: 2021-12-31 00:53:49
 \*----------------------------------------*/
 
 import Data from "./../utilities/Data.js";
@@ -11,7 +11,7 @@ import { log, info, warn, error } from './../utilities/log.js';
 import { setIcon, setDefaultIcon } from './../utilities/icon.js';
 import { on, sendMessage, sendMessageToTab } from './../utilities/com.js';
 
-import { tabsHighlight, tabsSendMessage, tabsOnActivatedAddListener, runtimeOnInstalledAddListener, runtimeSetUninstallURL, browserActionOnClickAddListener } from './../utilities/browser.js';
+import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivatedAddListener, runtimeOnInstalledAddListener, runtimeSetUninstallURL, browserActionOnClickAddListener } from './../utilities/browser.js';
 
 // runtimeOnInstalledAddListener(data => {
 // 	if(data.reason == "install"){
@@ -69,6 +69,12 @@ on("updateMedia", (data, resolve, reject, sender) => {
 });
 
 
+on("closePopup", ()=>{
+	sendMessageToTab("closePopup")
+		.then(()=>{})
+		.catch(()=>{});
+	resolve(true);
+});
 
 on("deleteMedia", (data, resolve, reject, sender) => {
 	data.tabId = sender.tab.id;
@@ -123,8 +129,6 @@ on("setSide", (tabId, resolve, reject, sender) => {
 	.map(media => {
 		media.volume = side[0].includes(media.tabId) ? (1-lvl) : lvl;
 		tabsSendMessage(media.tabId, { action : "volume", data : media })
-
-		// tabsSendMessage(media.tabId, { action : "sendVolume", data : lvl })
 	});
 	sendMessageToTab("medias", {medias, side, lvl})
 		.then(()=>{})
@@ -137,11 +141,29 @@ on("play", (data, resolve, reject, sender) => {
 	resolve(true);
 });
 
+on("openYoutube", (data, resolve, reject, sender) => {
+	tabsCreate({ url : "https://www.youtube.com/" });
+	resolve(true);
+});
+
+
+
+
+on("remove", (data, resolve, reject, sender) => {
+	tabsRemove(data.tabId)
+	.then(() => sendMessageToTab("openPopup") )
+	.catch(()=>{});
+	resolve(true);
+});
+
+
 on("show", (data, resolve, reject, sender) => {
 	tabsHighlight({
 		windowId : data.windowId, 
 		tabs: data.tabIndex
 	})
+	.then(() => sendMessageToTab("openPopup") )
+	.catch(()=>{});
 	resolve(true);
 });
 
@@ -155,6 +177,10 @@ on("progress", (data, resolve, reject, sender) => {
 	resolve(true);
 });
 
+on("muted", (data, resolve, reject, sender) => {
+	tabsSendMessage(data.tabId, { action : "muted", data })
+	resolve(true);
+});
 
 on("speed", (data, resolve, reject, sender) => {
 	tabsSendMessage(data.tabId, { action : "speed", data })

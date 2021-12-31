@@ -2,14 +2,14 @@
   mixTube - SubMenu.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-30 15:30:28
-  @Last Modified time: 2021-12-30 20:32:21
+  @Last Modified time: 2021-12-31 01:13:56
 \*----------------------------------------*/
 import React from 'react';
 import RenderTracklist from './RenderTracklist.js';
 import RenderController from './RenderController.js';
 import { invlerp, lerp } from './../utilities/Math.js';
 
-const SubMenu = ({track, onSwitchChannel, onShow=()=>{}, onSpeedChange=()=>{}, onMouseLeft=()=>{}}) => {
+const SubMenu = ({track, onSwitchChannel, onMuted=()=>{}, onRemove=()=>{}, onShow=()=>{}, onSpeedChange=()=>{}, onMouseLeft=()=>{}}) => {
 	
 	const timer = React.useRef(null);
 	const min = -9;
@@ -20,10 +20,12 @@ const SubMenu = ({track, onSwitchChannel, onShow=()=>{}, onSpeedChange=()=>{}, o
 	}
 
 	const handleMouseEnter = () => {
+
 		clearTimeout(timer.current);
 	}
 
 	const switchChannelHandler = (track, event) => {
+		onMouseLeft();
 		onSwitchChannel(event, track);
 	}
 
@@ -55,6 +57,14 @@ const SubMenu = ({track, onSwitchChannel, onShow=()=>{}, onSpeedChange=()=>{}, o
 		onShow(track, event);
 	}
 
+	const muteHandler = (track, event) => {
+		onMuted(track, event);
+	}
+
+	const removeHandler=(track, event) => {
+		onRemove(track, event);
+	}
+
 	return (
 		<ul 
 			className="mixTube-subMenu" 
@@ -62,14 +72,20 @@ const SubMenu = ({track, onSwitchChannel, onShow=()=>{}, onSpeedChange=()=>{}, o
 			onMouseLeave={handleMouseLeave.bind(this)}
 		>
 			<li>
-				<button onClick={openHandler.bind(this, track)}>
-					SHOW
+				<button 
+					onClick={removeHandler.bind(this, track)} 
+				>
+					✖
 				</button>
-			</li>
-			<li>
 				<button onClick={switchChannelHandler.bind(this, track)}>
-					<span className="mixTube-goLeft">to left</span>
-					<span className="mixTube-goRight">to right</span>
+					<span className="mixTube-goLeft">◀</span>
+					<span className="mixTube-goRight">▶</span>
+				</button>
+				<button onClick={openHandler.bind(this, track)}>
+					☉
+				</button>
+				<button className={track.muted ? `muted` : "" } onClick={muteHandler.bind(this, track)}>
+					♪
 				</button>
 			</li>
 			<li className="mixTube-subMenu-speed">
@@ -82,8 +98,7 @@ const SubMenu = ({track, onSwitchChannel, onShow=()=>{}, onSpeedChange=()=>{}, o
 						onChange={handleChange.bind(this)}
 					/>
 				</div>
-			</li>
-			
+			</li>			
 		</ul>
 	);
 }

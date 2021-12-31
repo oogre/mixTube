@@ -2,7 +2,7 @@
   runtime-examples - content.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-28 03:12:11
-  @Last Modified time: 2021-12-30 20:06:37
+  @Last Modified time: 2021-12-30 23:12:32
 \*----------------------------------------*/
 import {onReady} from './../utilities/onReady.js';
 import { on, sendMessage } from './../utilities/com.js';
@@ -32,7 +32,8 @@ const buildInfo = () => {
 		currentTime : media.currentTime,
 		volume : media.volume,
 		playing : media.playing,
-		playbackRate : media.playbackRate
+		playbackRate : media.playbackRate,
+		muted : media.muted
 	}
 };
 
@@ -71,6 +72,11 @@ on("progress", (data, resolve) =>{
 
 on("speed", (data, resolve) =>{
 	getMedia().playbackRate = data.playbackRate;
+	resolve(true);
+});
+
+on("muted", (data, resolve) =>{
+	getMedia().muted = data.muted;
 	resolve(true);
 });
 

@@ -16,7 +16,7 @@ html,
 }
 
 body {
-  font-size: 16px;
+  font-size: 11px;
   color: #fed;
 }
 
@@ -39,9 +39,43 @@ ul {
   overflow: hidden;
 }
 
-.draggable {
-    cursor: default;
-    user-select: none;
+.mixTube-title-bar{
+  height: 25px;
+  position: relative;
+  text-align: center;
+}
+
+.mixTube-texture-bar{
+  background: radial-gradient(#fed 3%, transparent 14%) 0px 0px, radial-gradient(#fed 5%, transparent 8%) 0px 5px, radial-gradient(#fed 7%, transparent 6%) 5px 2px, radial-gradient(#fed 9%, transparent 4%) 10px 0px;
+  background-color: rgba(0, 0, 0, 0);
+  background-size: auto, auto, auto, auto;
+  background-color: transparent;
+  background-size: 8px 8px;
+  height: 10px;
+  width: 100%;
+  display: block;
+  width: calc(100% - 23px);
+}
+.mixTube-title-bar-title{
+  position: absolute;
+  top: 0;
+  text-align: center;
+  background: #161b22;
+  padding: 0 20px;
+  transform: translate(-50%, 0) skew(-8deg, -4deg);
+  font-size: 1.2em;
+  height: 9px;
+}
+
+.mixTube-title-bar-close{
+  border: none;
+  background: transparent;
+  color: #fed;
+  position: absolute;
+  top: -4px;
+  right: 7px;
+  padding: 0;
+  cursor: pointer;
 }
 
 .mixTube-element{
@@ -51,6 +85,7 @@ ul {
 .mixTube-channels{
   display: flex;
   flex-flow: row;
+  height: calc( 100% - 50px);
 }
 
 .mixTube-mixer{
@@ -68,7 +103,7 @@ input[type=range]:hover{
 }
 
 .mixTube-tarcklist-seek-bar{
-  height: 6px;
+  height: 4px;
   display: flex;
 }
 
@@ -120,25 +155,35 @@ input[type=range]:hover{
 
 .mixTube-tarcklist-item{
   position: relative;
+  width: calc(100% - 14px);
 }
 
-.mixTube-tarcklist-item-play-pause{
+
+
+.mixTube-tarcklist-item-play-pause, 
+.mixTube-tarcklist-item-cue{
   width: 25px;
   height: 25px;
 }
-.mixTube-tarcklist-item-play-pause button{
+.mixTube-tarcklist-item-play-pause button,
+.mixTube-tarcklist-item-cue button{
   border: none;
   background: transparent;
   color: #fed;
   width: 100%;
   height: 100%;
   cursor: pointer;
+
 }
 
 .mixTube-tarcklist-item-title{
-  width: calc(100% - 50px);
+  width: 100%;
   align-items: center;
   display: flex;
+}
+
+.muted{
+  text-decoration: wavy line-through red;
 }
 
 .mixTube-tarcklist-item-title span{
@@ -149,7 +194,7 @@ input[type=range]:hover{
  width: 25px; 
 }
 .mixTube-mixer input[type=range]{
-  width: calc(100% - 10px);
+  width: calc(100% - 50px);
   margin: 0;
   background: transparent;
   height: 100%;
@@ -202,13 +247,25 @@ input[type=range]:hover{
 .mixTube-subMenu{
   position: absolute;
   right: 0;
-  background: rgba(22, 27, 34, 0.75);
+  background: rgba(9, 12, 15, 0.75);
   z-index: 1;
   padding: 5px;
   width: 100px;
   overflow: hidden;
   text-align: right;
 }
+
+.mixTube-subMenu li:first-child{
+  display: flex;
+  flex-flow: row;
+}
+.mixTube-subMenu li:first-child button{
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .mixTube-subMenu button{
   width: 100%;
@@ -255,23 +312,23 @@ input[type=range]:hover{
   position: relative;
 }
 .mixTube-subMenu-speed:after{
-    position: absolute;
-    content: '¼ ½ 3/4 1 5/4 2 4';
-    word-spacing: 3px;
-    left: 2px;
-    top: 19px;
-    font-size: 0.5em;
+  position: absolute;
+  content: '¼ ½ 3/4 1 5/4 2 4';
+  word-spacing: 3.7px;
+  left: 2px;
+  top: 19px;
+  font-size: 0.7em;
 }
 
 .mixTube-subMenu-speed div:after{
-    position: absolute;
-    content: '| | | | | | |';
-    word-spacing: 6.8px;
-    top: 6px;
-    color: white;
-    font-size: 0.5em;
-    z-index: -1;
-    left: 0;
+  position: absolute;
+  content: '| | | | | | |';
+  word-spacing: 7.2px;
+  top: 6px;
+  color: white;
+  font-size: 0.7em;
+  z-index: -1;
+  left: 0;
 }
 .mixTube-channel {
   flex: 1 1 auto;
@@ -281,10 +338,13 @@ input[type=range]:hover{
 }
 
 .mixTube-tarcklist{
-  color: #ccc;
+  color: #fed;
   flex: 1 1 auto;
-  max-height: calc(100% - 25px);
   overflow: scroll;
+  scrollbar-width: thin;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
 }
 
 .mixTube-tarcklist > li > ul{
@@ -296,12 +356,8 @@ input[type=range]:hover{
   white-space: nowrap;
   overflow: hidden;
 }
-.mixTube-tarcklist > li:nth-child(2n-1){
+.mixTube-tarcklist > li:nth-child(2n-1):not(:last-child){
   background-color: rgba(255, 255, 255, 0.1);
-}
-.mixTube-tarcklist > li.selected{
-  color: #fff;
-  background-color: rgba(255, 255, 255, 0.2);
 }
 
 
@@ -315,13 +371,40 @@ input[type=range]:hover{
   height: 25px;
 }
 
-.mixTube-element:not(:last-child){
+/*.mixTube-element:not(:last-child){
   border-bottom: solid 1px #fed;
-}
+}*/
 
 .mixTube-channel:not(:last-child){
   border-right: solid 1px #fed;
 }
+
+.mixTube-tarcklist-add {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-flow: column;
+  height: 50px;
+}
+.mixTube-tarcklist-add button {
+  border: none;
+  background: transparent;
+  color: #fed;
+  padding: 0;
+  margin: 0;
+  font-size: 1.1em;
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  transition: transform 0.5s;
+  transform-origin: center center;
+  justify-content: center;
+  display: flex;
+}
+.mixTube-tarcklist-add button:hover{
+  transform: rotate(90deg);
+}
+
 
 .bcksp-popup__container {
   background: #fff;

@@ -2,7 +2,7 @@
   bcksp.es - popup.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-29 00:52:06
-  @Last Modified time: 2021-12-29 01:27:33
+  @Last Modified time: 2021-12-31 00:54:49
 \*----------------------------------------*/
 
 import React from 'react';
@@ -57,17 +57,23 @@ const Popup = ({connected, loggedIn}) => {
 			.then(() => {})
 			.catch(e => error(e));
 	}
+
+	const closeHandler = ()=>{
+		sendMessage("closePopup")
+			.then(() => {})
+			.catch(e => error(e));
+	}
 	
 	const mouseEnterPopupHandler = event => {
-		clearTimeout(closeTimeOut);
+		// clearTimeout(closeTimeOut);
 	}
 
 	const mouseLeavePopupHandler = event => {
-		closeTimeOut = setTimeout(()=>{
-			sendMessage("closePopup")
-			.then(() => { })
-			.catch(e => error(e));
-		}, 500);
+		// closeTimeOut = setTimeout(()=>{
+		// 	sendMessage("closePopup")
+		// 	.then(() => { })
+		// 	.catch(e => error(e));
+		// }, 500);
 	}
 
 	return (
@@ -82,6 +88,18 @@ const Popup = ({connected, loggedIn}) => {
 				lvl={lvl}
 				onVolumeChange={handleVolumeChange.bind(this)}
 			/>
+			<div className="mixTube-title-bar">
+				<span className="mixTube-texture-bar"></span>
+				<span className="mixTube-title-bar-title">
+					mixTube
+				</span>
+				<button 
+					className="mixTube-title-bar-close"
+					onClick={closeHandler.bind(this)}
+				>
+					✖
+				</button>
+			</div>
 		</div>
 	);
 }

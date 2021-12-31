@@ -2,7 +2,7 @@
   mixTube - RenderTrack.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-30 19:08:09
-  @Last Modified time: 2021-12-30 20:11:59
+  @Last Modified time: 2021-12-31 01:59:59
 \*----------------------------------------*/
 import React from 'react';
 import { on, sendMessage } from './../utilities/com.js';
@@ -13,8 +13,14 @@ import SubMenu from './SubMenu.js';
 const RenderTrack = ({track, onSwitchChannel}) => {
 	// console.log(tarcklist);
 	const [subMenuVisible, setSubMenuVisible] = React.useState(false);
+	const cueTime = React.useRef(null);
+	const cueDownTime = React.useRef(null);
 
 	const playHandler = (track, event) => {
+		track.muted = false;
+		sendMessage("muted", track)
+			.then(() => { })
+			.catch(e => error(e));
 		sendMessage("play", track)
 			.then(() => { })
 			.catch(e => error(e));
@@ -71,7 +77,19 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 			.then(() => { })
 			.catch(e => error(e));
 	}
+	const handleRemove = (track, event) => {
+		sendMessage("remove", track)
+			.then(() => { })
+			.catch(e => error(e));
+	}
 
+	const handleMute = (track, event) => {
+		track.muted = !track.muted;
+		sendMessage("muted", track)
+			.then(() => { })
+			.catch(e => error(e));
+	}
+	
 	const handleShowSubMenu = ()=>{
 		setSubMenuVisible(true);
 	}
@@ -80,8 +98,39 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 		setSubMenuVisible(false);
 	}
 
+	const cueHandler = (track, event)=>{
+		if(cueTime == null){
+			setCueTime(track.currentTime);
+		}else{
+			track.currentTime = cueTime;
+			sendMessage("setCurrentTime", track)
+				.then(() => { })
+				.catch(e => error(e));
+		}
+	}
+
+	const cueUpHandler = (track, event)=>{
+
+
+		if(Date.now() - cueDownTime.current > 300){
+			cueTime.current = null;
+		}else if(cueTime.current == null){
+			cueTime.current = track.currentTime
+		}else{
+			track.currentTime = cueTime.current;
+			sendMessage("setCurrentTime", track)
+				.then(() => { })
+				.catch(e => error(e));
+		}
+	}
+
+	const cueDownHandler = (track, event)=>{
+		cueDownTime.current = Date.now();
+	}
+
+
 	return (
-		<li className="mixTube-tarcklist-item">
+		<li className={`mixTube-tarcklist-item ${track.muted ? `muted` : "" }`}>
 			<ul>
 				<li className="mixTube-tarcklist-item-play-pause">
 					{
@@ -95,6 +144,11 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 							</button>
 						}
 				</li>
+				{/*<li className="mixTube-tarcklist-item-cue">
+							<button onMouseUp={cueUpHandler.bind(this, track)} onMouseDown={cueDownHandler.bind(this, track)}>
+								<span>♯</span>
+							</button>
+				</li>*/}
 				<li className="mixTube-tarcklist-item-title">
 					<Marquee 
 						run={track.playing ? 1 : 0}
@@ -108,6 +162,8 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 					{
 						subMenuVisible && 
 							<SubMenu
+								onMuted={handleMute.bind(this)}
+								onRemove={handleRemove.bind(this)}
 								onShow={handleShow.bind(this)}
 								onMouseLeft={handleHideSubMenu.bind(this)}
 								onSpeedChange={handleSpeed.bind(this, track)}
