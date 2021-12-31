@@ -2,7 +2,7 @@
   runtime-examples - background.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-27 23:11:57
-  @Last Modified time: 2021-12-31 13:28:53
+  @Last Modified time: 2021-12-31 15:04:27
 \*----------------------------------------*/
 
 import Data from "./../utilities/Data.js";
@@ -35,6 +35,9 @@ browserActionOnClickAddListener(tab => {
 	.catch(()=>{});
 });
 
+const settings = {
+	size : 200
+};
 const medias = {};
 const side = [[], []];
 let lvl = 0.5;
@@ -150,6 +153,16 @@ on("remove", (data, resolve, reject, sender) => {
 	tabsRemove(data.tabId)
 	.then(() => sendMessageToTab("openPopup") )
 	.catch(()=>{});
+	resolve(true);
+});
+
+on("getSettings", (data, resolve, reject, sender) => {
+	resolve(settings);
+});
+
+on("setSize", (height, resolve, reject, sender) => {
+	settings.size = height
+	tabsSendMessage(sender.tab.id, { action : "setSize", data : height  })
 	resolve(true);
 });
 

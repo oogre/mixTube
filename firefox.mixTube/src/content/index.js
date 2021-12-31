@@ -2,13 +2,13 @@
   runtime-examples - content.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-28 03:12:11
-  @Last Modified time: 2021-12-30 23:12:32
+  @Last Modified time: 2021-12-31 15:06:34
 \*----------------------------------------*/
 import {onReady} from './../utilities/onReady.js';
 import { on, sendMessage } from './../utilities/com.js';
 import { runtimeGetURL } from './../utilities/browser.js';
 import { log, info, warn, error } from './../utilities/log.js';
-import { togglePopup, closePopup, createIcon, setIcon, closeIcon } from './popupManager.js';
+import { togglePopup, closePopup, createIcon, setIcon, closeIcon, setHeight } from './popupManager.js';
 import { onDomChange } from './../utilities/onDomChange.js';
 
 Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
@@ -37,6 +37,11 @@ const buildInfo = () => {
 	}
 };
 
+on("setSize", (data, resolve) =>{
+	if(window != window.top)return;
+	setHeight(data);
+	resolve(true);
+});
 
 on("closePopup", (data, resolve) =>{
 	if(window != window.top)return;
@@ -79,6 +84,13 @@ on("muted", (data, resolve) =>{
 	getMedia().muted = data.muted;
 	resolve(true);
 });
+
+
+sendMessage("getSettings")
+.then(data => {
+	console.log(data);
+})
+.catch(error => {});
 
 onReady( async ()=>{
 	const location = window.location.toString();

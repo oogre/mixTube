@@ -45,6 +45,16 @@ ul {
   text-align: center;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
 .mixTube-texture-bar{
   background: radial-gradient(#fed 3%, transparent 14%) 0px 0px, radial-gradient(#fed 5%, transparent 8%) 0px 5px, radial-gradient(#fed 7%, transparent 6%) 5px 2px, radial-gradient(#fed 9%, transparent 4%) 10px 0px;
   background-color: rgba(0, 0, 0, 0);
@@ -57,6 +67,7 @@ ul {
   width: calc(100% - 23px);
 }
 .mixTube-title-bar-title{
+  cursor: ns-resize;
   position: absolute;
   top: 0;
   text-align: center;

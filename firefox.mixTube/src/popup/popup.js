@@ -2,7 +2,7 @@
   bcksp.es - popup.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-29 00:52:06
-  @Last Modified time: 2021-12-31 00:54:49
+  @Last Modified time: 2021-12-31 15:01:24
 \*----------------------------------------*/
 
 import React from 'react';
@@ -76,6 +76,21 @@ const Popup = ({connected, loggedIn}) => {
 		// }, 500);
 	}
 
+	const mouseMove = event => {
+		sendMessage("setSize", event.y + 12 )
+			.then(() => {})
+			.catch(e => error(e));
+
+	}
+	const mouseDownHandler = event =>{
+		document.querySelector("body").addEventListener("mousemove", mouseMove);
+		document.querySelector("body").addEventListener("mouseup", mouseUpHandler);
+	}
+	const mouseUpHandler = ()=>{
+		document.querySelector("body").removeEventListener("mouseup", mouseUpHandler);
+		document.querySelector("body").removeEventListener("mousemove", mouseMove);
+	}
+
 	return (
 		<div className="mixTube-popup">
 			<RenderChannels 
@@ -90,7 +105,7 @@ const Popup = ({connected, loggedIn}) => {
 			/>
 			<div className="mixTube-title-bar">
 				<span className="mixTube-texture-bar"></span>
-				<span className="mixTube-title-bar-title">
+				<span className="mixTube-title-bar-title noselect" onMouseDown={mouseDownHandler.bind(this)}>
 					mixTube
 				</span>
 				<button 

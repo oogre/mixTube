@@ -2,7 +2,7 @@
   bcksp.es - popupManager.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2019-04-17 12:28:31
-  @Last Modified time: 2020-02-04 16:40:19
+  @Last Modified time: 2021-12-31 14:58:45
 \*----------------------------------------*/
 import { runtimeGetURL } from './../utilities/browser.js';
 import { sendMessage } from './../utilities/com.js';
@@ -19,6 +19,11 @@ export function openPopup(){
 export function closePopup(popupIframe = document.querySelector("#bcksp-es-frame")){
 	popupIframe.parentNode.removeChild(popupIframe);
 	popupIframe = null;
+}
+
+export function setHeight(value) {
+	let popupIframe = document.querySelector("#bcksp-es-frame");
+	popupIframe.style.height = value + "px";
 }
 
 export function togglePopup(){

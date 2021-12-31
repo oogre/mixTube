@@ -2,7 +2,7 @@
   mixTube - RenderTrack.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-30 19:08:09
-  @Last Modified time: 2021-12-31 13:44:23
+  @Last Modified time: 2021-12-31 14:11:09
 \*----------------------------------------*/
 import React from 'react';
 import { on, sendMessage } from './../utilities/com.js';
@@ -15,20 +15,14 @@ import RenderCue from './RenderCue.js';
 const RenderTrack = ({track, onSwitchChannel}) => {
 	// console.log(tarcklist);
 	const [subMenuVisible, setSubMenuVisible] = React.useState(false);
+
+	const [cuing, setCuing] = React.useState(false);
 	
-	const cueTime = React.useRef({
-		start : null,
-		stop : null
-	});
-	const cueDownTime = React.useRef(null);
-	const looper = React.useRef(null);
+
 
 	const playPauseHandler = (track, event) => {
-		if(track.playing && looper.current != null) {
-			clearInterval(looper.current);
-			looper.current = null;
-			cueTime.current.start = null;
-			cueTime.current.stop = null;
+		if(track.playing && cuing) {
+			setCuing(false);
 		}else if (track.playing){
 			sendMessage("pause", track)
 				.then(() => { })
@@ -44,9 +38,6 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 		}
 	}
 
-	const pauseHandler = (track, event) => {
-		
-	}
 	const timeConverter = (time)=> {
 		function str_pad_left(string,pad,length) {
 			return (new Array(length+1).join(pad)+string).slice(-length);
@@ -70,6 +61,7 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 	}
 
 	const handleSwitchChannel = (event, tarck)=>{
+		setCuing(false)
 		handleHideSubMenu();
 		onSwitchChannel(event, tarck);
 	}
@@ -114,32 +106,6 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 		setSubMenuVisible(false);
 	}
 
-	const cueUpHandler = (track, event)=>{
-		if(!track.playing)return;
-		cueTime.current.stop = track.currentTime;
-		if(cueTime.current.stop == cueTime.current.start){
-			cueTime.current.stop = cueTime.current.start = null;
-			return;
-		}
-		const loop = () => {
-			track.currentTime = cueTime.current.start;
-			sendMessage("setCurrentTime", track)
-				.then(() => { })
-				.catch(e => error(e));	
-		}
-		clearInterval(looper.current);
-		looper.current = null;
-		looper.current = setInterval(loop, (cueTime.current.stop - cueTime.current.start) * 1000)
-		loop();
-	}
-
-	const cueDownHandler = (track, event)=>{
-		if(!track.playing)return;
-		clearInterval(looper.current);
-		looper.current = null;
-		cueTime.current.start = track.currentTime
-	}
-
 	return (
 		<li className={`mixTube-tarcklist-item ${track.muted ? `muted` : "" }`}>
 			<ul>
@@ -150,9 +116,8 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 				</li>
 				<li className="mixTube-tarcklist-item-cue">
 					<RenderCue 
-						isCuing={cueTime.current.start!=null}
-						onMouseDown={cueDownHandler.bind(this)}
-						onMouseUp={cueUpHandler.bind(this)}
+						setCuing={setCuing}
+						isCuing={cuing}
 						track={track} 
 					/>
 				</li>
