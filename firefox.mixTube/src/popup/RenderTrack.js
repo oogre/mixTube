@@ -2,34 +2,50 @@
   mixTube - RenderTrack.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-30 19:08:09
-  @Last Modified time: 2021-12-31 01:59:59
+  @Last Modified time: 2021-12-31 13:44:23
 \*----------------------------------------*/
 import React from 'react';
 import { on, sendMessage } from './../utilities/com.js';
 import Marquee from './Marquee.js';
 import Seekbar from './Seekbar.js';
 import SubMenu from './SubMenu.js';
+import RenderCue from './RenderCue.js';
+
 
 const RenderTrack = ({track, onSwitchChannel}) => {
 	// console.log(tarcklist);
 	const [subMenuVisible, setSubMenuVisible] = React.useState(false);
-	const cueTime = React.useRef(null);
+	
+	const cueTime = React.useRef({
+		start : null,
+		stop : null
+	});
 	const cueDownTime = React.useRef(null);
+	const looper = React.useRef(null);
 
-	const playHandler = (track, event) => {
-		track.muted = false;
-		sendMessage("muted", track)
-			.then(() => { })
-			.catch(e => error(e));
-		sendMessage("play", track)
-			.then(() => { })
-			.catch(e => error(e));
+	const playPauseHandler = (track, event) => {
+		if(track.playing && looper.current != null) {
+			clearInterval(looper.current);
+			looper.current = null;
+			cueTime.current.start = null;
+			cueTime.current.stop = null;
+		}else if (track.playing){
+			sendMessage("pause", track)
+				.then(() => { })
+				.catch(e => error(e));
+		}else{
+			track.muted = false;
+			sendMessage("muted", track)
+				.then(() => { })
+				.catch(e => error(e));
+			sendMessage("play", track)
+				.then(() => { })
+				.catch(e => error(e));
+		}
 	}
 
 	const pauseHandler = (track, event) => {
-		sendMessage("pause", track)
-			.then(() => { })
-			.catch(e => error(e));
+		
 	}
 	const timeConverter = (time)=> {
 		function str_pad_left(string,pad,length) {
@@ -98,57 +114,48 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 		setSubMenuVisible(false);
 	}
 
-	const cueHandler = (track, event)=>{
-		if(cueTime == null){
-			setCueTime(track.currentTime);
-		}else{
-			track.currentTime = cueTime;
-			sendMessage("setCurrentTime", track)
-				.then(() => { })
-				.catch(e => error(e));
-		}
-	}
-
 	const cueUpHandler = (track, event)=>{
-
-
-		if(Date.now() - cueDownTime.current > 300){
-			cueTime.current = null;
-		}else if(cueTime.current == null){
-			cueTime.current = track.currentTime
-		}else{
-			track.currentTime = cueTime.current;
+		if(!track.playing)return;
+		cueTime.current.stop = track.currentTime;
+		if(cueTime.current.stop == cueTime.current.start){
+			cueTime.current.stop = cueTime.current.start = null;
+			return;
+		}
+		const loop = () => {
+			track.currentTime = cueTime.current.start;
 			sendMessage("setCurrentTime", track)
 				.then(() => { })
-				.catch(e => error(e));
+				.catch(e => error(e));	
 		}
+		clearInterval(looper.current);
+		looper.current = null;
+		looper.current = setInterval(loop, (cueTime.current.stop - cueTime.current.start) * 1000)
+		loop();
 	}
 
 	const cueDownHandler = (track, event)=>{
-		cueDownTime.current = Date.now();
+		if(!track.playing)return;
+		clearInterval(looper.current);
+		looper.current = null;
+		cueTime.current.start = track.currentTime
 	}
-
 
 	return (
 		<li className={`mixTube-tarcklist-item ${track.muted ? `muted` : "" }`}>
 			<ul>
 				<li className="mixTube-tarcklist-item-play-pause">
-					{
-						track.playing ? 
-							<button onClick={pauseHandler.bind(this, track)}>
-								<span>▶</span>
-							</button>
-						:
-							<button onClick={playHandler.bind(this, track)}>
-								<span>▷</span>
-							</button>
-						}
+					<button onClick={playPauseHandler.bind(this, track)}>
+							<span>{track.playing ? '▶' : '▷'}</span>
+						</button>
 				</li>
-				{/*<li className="mixTube-tarcklist-item-cue">
-							<button onMouseUp={cueUpHandler.bind(this, track)} onMouseDown={cueDownHandler.bind(this, track)}>
-								<span>♯</span>
-							</button>
-				</li>*/}
+				<li className="mixTube-tarcklist-item-cue">
+					<RenderCue 
+						isCuing={cueTime.current.start!=null}
+						onMouseDown={cueDownHandler.bind(this)}
+						onMouseUp={cueUpHandler.bind(this)}
+						track={track} 
+					/>
+				</li>
 				<li className="mixTube-tarcklist-item-title">
 					<Marquee 
 						run={track.playing ? 1 : 0}

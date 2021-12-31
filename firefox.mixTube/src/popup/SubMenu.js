@@ -2,11 +2,10 @@
   mixTube - SubMenu.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-30 15:30:28
-  @Last Modified time: 2021-12-31 01:13:56
+  @Last Modified time: 2021-12-31 13:18:21
 \*----------------------------------------*/
 import React from 'react';
 import RenderTracklist from './RenderTracklist.js';
-import RenderController from './RenderController.js';
 import { invlerp, lerp } from './../utilities/Math.js';
 
 const SubMenu = ({track, onSwitchChannel, onMuted=()=>{}, onRemove=()=>{}, onShow=()=>{}, onSpeedChange=()=>{}, onMouseLeft=()=>{}}) => {

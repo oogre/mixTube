@@ -2,7 +2,7 @@
   runtime-examples - background.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-27 23:11:57
-  @Last Modified time: 2021-12-31 00:53:49
+  @Last Modified time: 2021-12-31 13:28:53
 \*----------------------------------------*/
 
 import Data from "./../utilities/Data.js";
@@ -146,16 +146,12 @@ on("openYoutube", (data, resolve, reject, sender) => {
 	resolve(true);
 });
 
-
-
-
 on("remove", (data, resolve, reject, sender) => {
 	tabsRemove(data.tabId)
 	.then(() => sendMessageToTab("openPopup") )
 	.catch(()=>{});
 	resolve(true);
 });
-
 
 on("show", (data, resolve, reject, sender) => {
 	tabsHighlight({
