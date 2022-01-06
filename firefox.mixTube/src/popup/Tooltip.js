@@ -32,7 +32,7 @@ const Tooltip = ({ title, children, position = Tooltip.topLeft }) => {
 	let style = {
 		position: "absolute",
 		zIndex: "100",
-		background: "darkgray",
+		background: "gray",
 		padding: "5px",
 		borderRadius: "5px",
 		textTransform: 'capitalize'
@@ -55,6 +55,11 @@ const Tooltip = ({ title, children, position = Tooltip.topLeft }) => {
 		style.left = mouse.x+"px";
 		style.transform = "translate(-50%, 0)";
 	}
+	else if(position == Tooltip.topCursor){
+		style.top = "100%";
+		style.left = mouse.x+"px";
+		style.transform = "translate(-50%, 0)";
+	}
 	else if(position == Tooltip.bottomMiddle){
 		style.bottom = "100%";
 		style.transform = "translate(-50%, 0)";
@@ -66,6 +71,7 @@ const Tooltip = ({ title, children, position = Tooltip.topLeft }) => {
 			onMouseEnter={mouseEnterHandler.bind(this)} 
 			onMouseLeave={mouseLeaveHandler.bind(this)}
 			onMouseMove={mouseMoveHandler.bind(this)}
+			style={{width:"100%"}}
 		>
 			<span 
 				onMouseEnter={mouseLeaveHandler.bind(this)} 

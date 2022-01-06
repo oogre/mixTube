@@ -56,7 +56,7 @@ const RenderCue = ({ isCuing, setCuing, track }) => {
  	}
 
 	return (
-		<Tooltip title="cue">
+		<Tooltip title="loop">
 			<button 
 				onMouseUp={cueUpHandler.bind(this, track)} 
 				onMouseDown={cueDownHandler.bind(this, track)}

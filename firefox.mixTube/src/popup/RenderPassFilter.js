@@ -9,15 +9,17 @@ import { invlerp, lerp } from './../utilities/Math.js';
 import Tooltip from './Tooltip.js';
 
 const RenderPassFilter = ({ passFilter, onChange=()=>{} }) => {
-	const min = -10;
-	const max = 10;
-	const val = passFilter * 10;
+	const range = 4;
+	const min = -1*range;
+	const max = range;
+	const val = passFilter * range;
 
 	const handleChange = event => {
-		onChange(lerp(-1, 1, invlerp(min, max, event.target.value)));
+		onChange(event.target.value / range);
 	}
+	const label = val == 0 ? "all" : (val < 0 ? "low" : "high");
 	return (
-		<Tooltip title={`pass`} position={Tooltip.bottomMiddle}>
+		<Tooltip title={`${label}Pass`} position={Tooltip.topMiddle}>
 			<div>
 				<input 
 					type="range" 

@@ -133,6 +133,7 @@ input[type=range]:hover{
   background: transparent;
   margin: 0;
   height: 100%;
+  transform:translate(0, -5px);
 }
 
 .mixTube-tarcklist-seek-bar input[type=range]::-webkit-slider-runnable-track{
@@ -185,6 +186,8 @@ input[type=range]:hover{
 .mixTube-tarcklist-item-cue{
   width: 25px;
   height: 25px;
+
+  flex-shrink:0;
 }
 .mixTube-tarcklist-item-play-pause button,
 .mixTube-tarcklist-item-cue button{
@@ -198,12 +201,13 @@ input[type=range]:hover{
 }
 
 .mixTube-tarcklist-item-title{
-  width: 75%;
+  width: 100%;
   align-items: center;
   display: flex;
 }
 .mixTube-tarcklist-item-low-high-pass{
-  width: 25%;
+  width: 75px;
+  flex-shrink:0;
   align-items: center;
   display: flex;
 }
@@ -217,7 +221,8 @@ input[type=range]:hover{
   padding: 0 20px;
 }
 .mixTube-tarcklist-item-menu{
- width: 25px; 
+  width: 25px; 
+  flex-shrink:0;
 }
 .mixTube-mixer input[type=range]{
   width: calc(100% - 50px);
@@ -326,14 +331,17 @@ input[type=range]:hover{
 }
 .mixTube-tarcklist-item-low-high-pass input[type=range]::-moz-range-track,
 .mixTube-subMenu input[type=range]::-moz-range-track{
- background: #fed;
+  background: #fed;
+  height: 2px;
+  opacity: 0.3;
 }
 .mixTube-tarcklist-item-low-high-pass input[type=range]::-moz-range-thumb,
 .mixTube-subMenu input[type=range]::-moz-range-thumb{
- border-radius: 0;
+  border-radius: 0;
   border: none;
   background: #fed;
-  width: 5px;
+  width: 3px;
+  height: 10px;
 }
 .mixTube-tarcklist-item-low-high-pass input[type=range]::-moz-range-progress,
 .mixTube-subMenu input[type=range]::-moz-range-progress{
@@ -348,9 +356,9 @@ input[type=range]:hover{
 .mixTube-tarcklist-item-low-high-pass:after{
   position: absolute;
   content: '▼ | ▲';
-  word-spacing: 30px;
+  word-spacing: 23px;
   left: 2px;
-  top: 12px;
+  top: 14px;
   font-size: 0.7em;
 }
 .mixTube-subMenu-speed:after{
@@ -406,7 +414,6 @@ input[type=range]:hover{
 .mixTube-tarcklist > li > ul{
   display: flex;
   flex-flow: row;
-  gap: 0 5px;
 }
 
 .mixTube-tarcklist > li > ul > li {

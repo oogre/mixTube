@@ -169,6 +169,8 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 			<div className="mixTube-tarcklist-seek-bar">
 				<Seekbar 
 					progress={track.currentTime/track.duration}
+					currentTime={track.currentTime}
+					duration={track.duration}
 					onChange={handleProgress.bind(this, track)}
 				/>
 			</div>
