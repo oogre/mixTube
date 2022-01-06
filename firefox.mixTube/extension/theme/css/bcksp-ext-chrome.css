@@ -26,6 +26,9 @@ ul {
   list-style-type: none;
 }
 
+.hide{
+  display: none !important;
+}
 /*------------------------------------*\
   > Popup
 \*------------------------------------*/
@@ -102,11 +105,18 @@ ul {
 .mixTube-mixer{
   flex: 0 1 auto;
   height: 25px;
+  /*align-items: center;
+  display: flex;
+  justify-content: center;*/
+}
+
+.mixTube-mixer>span{
+  width: 100%;
   align-items: center;
   display: flex;
   justify-content: center;
+  height: 100%;
 }
-
 
 
 input[type=range]:hover{
@@ -188,7 +198,12 @@ input[type=range]:hover{
 }
 
 .mixTube-tarcklist-item-title{
-  width: 100%;
+  width: 75%;
+  align-items: center;
+  display: flex;
+}
+.mixTube-tarcklist-item-low-high-pass{
+  width: 25%;
   align-items: center;
   display: flex;
 }
@@ -266,11 +281,11 @@ input[type=range]:hover{
   text-align: right;
 }
 
-.mixTube-subMenu li:first-child{
+.mixTube-subMenu .mixTube-subMenu-horizontal>ul{
   display: flex;
   flex-flow: row;
 }
-.mixTube-subMenu li:first-child button{
+.mixTube-subMenu .mixTube-subMenu-item{
   flex: 1 1 auto;
   display: flex;
   justify-content: center;
@@ -303,24 +318,40 @@ input[type=range]:hover{
   width: 20px;
 }
 
+.mixTube-tarcklist-item-low-high-pass input[type=range],
 .mixTube-subMenu input[type=range]{
   width: 100%;
   background: transparent;
+  margin: 0;
 }
+.mixTube-tarcklist-item-low-high-pass input[type=range]::-moz-range-track,
 .mixTube-subMenu input[type=range]::-moz-range-track{
  background: #fed;
 }
+.mixTube-tarcklist-item-low-high-pass input[type=range]::-moz-range-thumb,
 .mixTube-subMenu input[type=range]::-moz-range-thumb{
  border-radius: 0;
   border: none;
   background: #fed;
   width: 5px;
 }
+.mixTube-tarcklist-item-low-high-pass input[type=range]::-moz-range-progress,
 .mixTube-subMenu input[type=range]::-moz-range-progress{
  background: transparent;
 }
+
+.mixTube-tarcklist-item-low-high-pass,
 .mixTube-subMenu-speed{
   position: relative;
+}
+
+.mixTube-tarcklist-item-low-high-pass:after{
+  position: absolute;
+  content: '▼ | ▲';
+  word-spacing: 30px;
+  left: 2px;
+  top: 12px;
+  font-size: 0.7em;
 }
 .mixTube-subMenu-speed:after{
   position: absolute;
@@ -346,7 +377,21 @@ input[type=range]:hover{
   display: flex;
   flex-flow: column;
   max-width : 50%;
+  position: relative;
 }
+
+.mixTube-channel-bg{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.05;
+  font-size: 140px;
+  padding-top: 16px;
+}
+
 
 .mixTube-tarcklist{
   color: #fed;
@@ -361,6 +406,7 @@ input[type=range]:hover{
 .mixTube-tarcklist > li > ul{
   display: flex;
   flex-flow: row;
+  gap: 0 5px;
 }
 
 .mixTube-tarcklist > li > ul > li {
@@ -374,7 +420,7 @@ input[type=range]:hover{
 
 .mixTube-channel-left .mixTube-goLeft,
 .mixTube-channel-right .mixTube-goRight{
-  display: none;
+  display: none !important ;
 }
 
 .mixTube-controller{

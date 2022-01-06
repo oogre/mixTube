@@ -2,22 +2,18 @@
   runtime-examples - background.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-27 23:11:57
-  @Last Modified time: 2021-12-31 15:04:27
+  @Last Modified time: 2022-01-06 00:29:25
 \*----------------------------------------*/
 
 import Data from "./../utilities/Data.js";
-import { config } from './../shared/config.js';
-import { log, info, warn, error } from './../utilities/log.js';
-import { setIcon, setDefaultIcon } from './../utilities/icon.js';
-import { on, sendMessage, sendMessageToTab } from './../utilities/com.js';
 
+import { log, info, warn, error } from './../utilities/log.js';
+import { on, sendMessage, sendMessageToTab } from './../utilities/com.js';
 import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivatedAddListener, runtimeOnInstalledAddListener, runtimeSetUninstallURL, browserActionOnClickAddListener } from './../utilities/browser.js';
 
 // runtimeOnInstalledAddListener(data => {
 // 	if(data.reason == "install"){
-// 		// tabHandler()
-// 		// .then(tab => tabsUpdate({ url : config.getHomeUrl() }))
-// 		// .catch(() => tabsCreate({ url : config.getHomeUrl() }));
+
 // 	}
 // });
 
@@ -30,7 +26,7 @@ tabsOnActivatedAddListener(({tabId}) => {
 });
 
 browserActionOnClickAddListener(tab => {
-	sendMessageToTab("openPopup")
+	sendMessageToTab("togglePopup")
 	.then(()=>{})
 	.catch(()=>{});
 });
@@ -38,7 +34,7 @@ browserActionOnClickAddListener(tab => {
 const settings = {
 	size : 200
 };
-const medias = {};
+const medias = [];
 const side = [[], []];
 let lvl = 0.5;
 
@@ -46,11 +42,12 @@ on("newMedia", (data, resolve, reject, sender) => {
 	data.tabId = sender.tab.id;
 	data.tabIndex = sender.tab.index;
 	data.windowId = sender.tab.windowId;
-
 	if(!side[0].includes(data.tabId) && !side[1].includes(data.tabId)){
 		side[0].push(data.tabId);
 	}
 	medias[sender.tab.id] = data;
+
+	console.log(medias);
 	sendMessageToTab("medias", {medias, side, lvl})
 	.then(()=>{})
 	.catch(()=>{});
@@ -107,7 +104,7 @@ on("getSide", (data, resolve, reject, sender) => {
 
 on("setVolumes", (data, resolve, reject, sender) => {
 	lvl = data;
-	Object.values(medias)
+	medias
 	.map(media => {
 		media.volume = side[0].includes(media.tabId) ? (1-lvl) : lvl;
 		tabsSendMessage(media.tabId, { action : "volume", data : media })
@@ -128,7 +125,7 @@ on("setSide", (tabId, resolve, reject, sender) => {
 		side[0].push(tabId)
 		side[1].splice(side[1].indexOf(tabId), 1);
 	}
-	Object.values(medias)
+	medias
 	.map(media => {
 		media.volume = side[0].includes(media.tabId) ? (1-lvl) : lvl;
 		tabsSendMessage(media.tabId, { action : "volume", data : media })
@@ -139,9 +136,18 @@ on("setSide", (tabId, resolve, reject, sender) => {
 	resolve(true);
 });
 
-on("play", (data, resolve, reject, sender) => {
-	tabsSendMessage(data.tabId, { action : "play" })
-	resolve(true);
+on("play", async (data, resolve, reject, sender) => {
+	try{
+		await tabsHighlight({
+			windowId : data.windowId, 
+			tabs: data.tabIndex
+		});
+		await sendMessageToTab("openPopup");
+		await sendMessageToTab("play")
+		resolve(true);
+	}catch(error){
+		reject(error);
+	}
 });
 
 on("openYoutube", (data, resolve, reject, sender) => {
@@ -178,6 +184,13 @@ on("show", (data, resolve, reject, sender) => {
 
 on("pause", (data, resolve, reject, sender) => {
 	tabsSendMessage(data.tabId, { action : "pause" })
+	resolve(true);
+});
+
+on("passFilter", (data, resolve, reject, sender) => {
+	tabsSendMessage(data.tabId, { action : "passFilter", data })
+	.then(d => console.log(d))
+	.catch(d => console.error(d))
 	resolve(true);
 });
 

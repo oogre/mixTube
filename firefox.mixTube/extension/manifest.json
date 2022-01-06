@@ -16,9 +16,6 @@
     "gecko": {
       "id": "jid1-P1oHEt4FsKJNoA@jetpack",
       "strict_min_version": "57.0a1"
-    },
-    "firefox_android" : {
-      "strict_min_version": "57.0a1"
     }
   },
   "icons": { 

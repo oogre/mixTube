@@ -2,11 +2,11 @@
   mixTube - RenderMixer.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-28 18:32:49
-  @Last Modified time: 2021-12-29 01:36:22
+  @Last Modified time: 2022-01-05 11:49:02
 \*----------------------------------------*/
 import React from 'react';
 import { lerp, invlerp } from './../utilities/Math.js';
-
+import Tooltip from './Tooltip.js';
 const RenderMixer = ({onVolumeChange, lvl=0}) => {
 
 
@@ -20,7 +20,8 @@ const RenderMixer = ({onVolumeChange, lvl=0}) => {
 	const val = lerp(min, max, lvl);
 	return (
 		<div className="mixTube-element mixTube-mixer">
-			<input 
+			<Tooltip title="mixer" position={Tooltip.bottomCursor}>
+				<input 
 					class="volume" 
 					type="range" 
 					min={min}
@@ -28,6 +29,7 @@ const RenderMixer = ({onVolumeChange, lvl=0}) => {
 					defaultValue={val}
 					onChange={handleVolume.bind(this)}
 				/>
+			</Tooltip>
 		</div>
 	);
 }

@@ -2,10 +2,9 @@
   bcksp.es - tools.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2019-01-04 15:38:28
-  @Last Modified time: 2020-02-03 22:17:11
+  @Last Modified time: 2022-01-03 23:12:56
 \*----------------------------------------*/
 
-import { config } from './../shared/config.js';
 import { isContentEditable, isInputField, isArray, isEmpty } from "./validation.js";
 import { sendMessage } from './com.js';
 

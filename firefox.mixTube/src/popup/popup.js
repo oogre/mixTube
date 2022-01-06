@@ -2,7 +2,7 @@
   bcksp.es - popup.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-29 00:52:06
-  @Last Modified time: 2021-12-31 15:01:24
+  @Last Modified time: 2022-01-04 13:35:37
 \*----------------------------------------*/
 
 import React from 'react';
@@ -25,7 +25,7 @@ const Popup = ({connected, loggedIn}) => {
 		}
 	}, []); 
 
-	const [medias, setMedias] = React.useState({});
+	const [medias, setMedias] = React.useState([]);
 	const [side, setSide] = React.useState([[], []]);
 	const [lvl, setLvl] = React.useState(1);
 
@@ -77,7 +77,7 @@ const Popup = ({connected, loggedIn}) => {
 	}
 
 	const mouseMove = event => {
-		sendMessage("setSize", event.y + 12 )
+		sendMessage("setSize", event.y + 20 )
 			.then(() => {})
 			.catch(e => error(e));
 

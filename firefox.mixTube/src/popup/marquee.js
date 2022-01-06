@@ -2,7 +2,7 @@
   mixTube - marquee.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-29 12:47:17
-  @Last Modified time: 2021-12-30 18:58:01
+  @Last Modified time: 2022-01-03 23:35:40
 \*----------------------------------------*/
 import React from 'react';
 import useAnimationFrame from './../utilities/useAnimationFrame.js'
@@ -26,7 +26,10 @@ const Marquee = ({text, run}) => {
 	React.useEffect(() => {
 		window.addEventListener("resize", getSize);
 		getSize();
-  	}, []);
+		return () => {
+			window.removeEventListener("resize", getSize);
+		}
+	}, []);
 
 
 	const offset = -1 * (Math.sin(step*0.01) * 0.5 + 0.5) * offsetMax * run;

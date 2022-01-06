@@ -2,7 +2,7 @@
   mixTube - RenderTrack.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-30 19:08:09
-  @Last Modified time: 2021-12-31 14:11:09
+  @Last Modified time: 2022-01-06 00:23:36
 \*----------------------------------------*/
 import React from 'react';
 import { on, sendMessage } from './../utilities/com.js';
@@ -10,7 +10,8 @@ import Marquee from './Marquee.js';
 import Seekbar from './Seekbar.js';
 import SubMenu from './SubMenu.js';
 import RenderCue from './RenderCue.js';
-
+import Tooltip from './Tooltip.js';
+import RenderPassFilter from './RenderPassFilter.js';
 
 const RenderTrack = ({track, onSwitchChannel}) => {
 	// console.log(tarcklist);
@@ -106,13 +107,22 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 		setSubMenuVisible(false);
 	}
 
+	const handlePassChange = (track, value) => {
+		track.passFilter = value;
+		sendMessage("passFilter", track)
+			.then(() => { })
+			.catch(e => error(e));
+	}
+
 	return (
 		<li className={`mixTube-tarcklist-item ${track.muted ? `muted` : "" }`}>
 			<ul>
 				<li className="mixTube-tarcklist-item-play-pause">
-					<button onClick={playPauseHandler.bind(this, track)}>
+					<Tooltip title={track.playing ? "pause" : "play"}>
+						<button onClick={playPauseHandler.bind(this, track)}>
 							<span>{track.playing ? '▶' : '▷'}</span>
 						</button>
+					</Tooltip>
 				</li>
 				<li className="mixTube-tarcklist-item-cue">
 					<RenderCue 
@@ -127,13 +137,19 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 						text={track.title}
 					/>
 				</li>
+				<li className="mixTube-tarcklist-item-low-high-pass">
+					<RenderPassFilter 
+						passFilter={track.passFilter}
+						onChange={handlePassChange.bind(this, track)}
+					/>
+				</li>			
 				<li 
 					className="mixTube-tarcklist-item-menu" 
 					onClick={handleShowSubMenu.bind(this)}
 				>
 					{
-						subMenuVisible && 
 							<SubMenu
+								className={subMenuVisible ? '' : 'hide'}
 								onMuted={handleMute.bind(this)}
 								onRemove={handleRemove.bind(this)}
 								onShow={handleShow.bind(this)}

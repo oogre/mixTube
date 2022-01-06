@@ -2,13 +2,13 @@
   runtime-examples - content.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-28 03:12:11
-  @Last Modified time: 2021-12-31 15:06:34
+  @Last Modified time: 2022-01-06 00:50:49
 \*----------------------------------------*/
 import {onReady} from './../utilities/onReady.js';
 import { on, sendMessage } from './../utilities/com.js';
 import { runtimeGetURL } from './../utilities/browser.js';
 import { log, info, warn, error } from './../utilities/log.js';
-import { togglePopup, closePopup, createIcon, setIcon, closeIcon, setHeight } from './popupManager.js';
+import { togglePopup, closePopup, openPopup, createIcon, setIcon, closeIcon, setHeight } from './popupManager.js';
 import { onDomChange } from './../utilities/onDomChange.js';
 
 Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
@@ -24,16 +24,16 @@ const callBackground = (action, event) => {
 const getMedia = () => document.querySelector("video");
 const getTitle = () => document.querySelector("h1.ytd-video-primary-info-renderer").innerText;
 const buildInfo = () => {
-	
-	const media = getMedia();
 	return { 
 		title : getTitle(),
-		duration : media.duration,
-		currentTime : media.currentTime,
-		volume : media.volume,
-		playing : media.playing,
-		playbackRate : media.playbackRate,
-		muted : media.muted
+		duration : mixTube.media.duration,
+		currentTime : mixTube.media.currentTime,
+		volume : mixTube.media.volume,
+		playing : mixTube.media.playing,
+		playbackRate : mixTube.media.playbackRate,
+		muted : mixTube.media.muted,
+		alreadyPlayed : false,
+		passFilter : (Math.min(mixTube.highPassFilter.gain.value, 0) - Math.min(mixTube.lowPassFilter.gain.value, 0))/25
 	}
 };
 
@@ -51,40 +51,60 @@ on("closePopup", (data, resolve) =>{
 
 on("openPopup", (data, resolve) =>{
 	if(window != window.top)return;
+	openPopup();
+	resolve(true);
+});
+
+on("togglePopup", (data, resolve) =>{
+	if(window != window.top)return;
 	togglePopup();
 	resolve(true);
 });
 
 on("play", (data, resolve) =>{
-	getMedia().play();
+	mixTube.media.play();
+	mixTube.media.play();
 	resolve(true);
 });
 
 on("pause", (data, resolve) =>{
-	getMedia().pause();
+	mixTube.media.pause();
 	resolve(true);
 });
 
 on("volume", (data, resolve) =>{
-	getMedia().volume = data.volume;
+	mixTube.media.volume = data.volume;
 	resolve(true);
 });
 
 on("progress", (data, resolve) =>{
-	getMedia().currentTime = data.currentTime;
+	mixTube.media.currentTime = data.currentTime;
 	resolve(true);
 });
 
 on("speed", (data, resolve) =>{
-	getMedia().playbackRate = data.playbackRate;
+	mixTube.media.playbackRate = data.playbackRate;
 	resolve(true);
 });
 
 on("muted", (data, resolve) =>{
-	getMedia().muted = data.muted;
+	mixTube.media.muted = data.muted;
 	resolve(true);
 });
 
+on("passFilter", ({passFilter}, resolve) =>{
+	const [low, high] = [Math.max(0, passFilter) * -25, Math.min(passFilter, 0) * 25];
+	mixTube.lowPassFilter.gain.setValueAtTime(low, mixTube.audioCtx.currentTime);
+	mixTube.highPassFilter.gain.setValueAtTime(high, mixTube.audioCtx.currentTime);
+	callBackground("updateMedia");
+	resolve(true);
+});
+
+on("gain", (data, resolve) =>{
+	mixTube.gainNode.gain.setValueAtTime(data, mixTube.audioCtx.currentTime);
+	
+	resolve(true);
+});
 
 sendMessage("getSettings")
 .then(data => {
@@ -92,9 +112,10 @@ sendMessage("getSettings")
 })
 .catch(error => {});
 
+const mixTube = {};
+
 onReady( async ()=>{
 	const location = window.location.toString();
-
 
 	if((/youtube\.com\/watch/ig).test(location)){
 
@@ -102,14 +123,32 @@ onReady( async ()=>{
 			await onDomChange("body", "h1.ytd-video-primary-info-renderer")
 		}
 
-		const media = document.querySelector("video");
-		if(media){
-			media.addEventListener('play', () => callBackground("updateMedia"));
-			media.addEventListener('pause', () => callBackground("updateMedia"));
-			media.addEventListener('ended', () => callBackground("updateMedia"));
-			media.addEventListener('volumechange', () => callBackground("updateMedia"));
-			media.addEventListener('ratechange', () => callBackground("updateMedia"));
-			media.addEventListener('timeupdate', () => callBackground("updateMedia"));
+		mixTube.media = document.querySelector("video");
+
+		mixTube.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+		const source = mixTube.audioCtx.createMediaElementSource(mixTube.media);
+		
+		mixTube.gainNode = mixTube.audioCtx.createGain();
+		mixTube.lowPassFilter = mixTube.audioCtx.createBiquadFilter();
+		mixTube.lowPassFilter.type = "lowshelf";
+		mixTube.lowPassFilter.frequency.value = 1000;
+		mixTube.lowPassFilter.gain.value = 0;
+		mixTube.highPassFilter = mixTube.audioCtx.createBiquadFilter();
+		mixTube.highPassFilter.type = "highshelf";
+		mixTube.highPassFilter.frequency.value = 1000;
+		mixTube.highPassFilter.gain.value = 0;
+		source.connect(mixTube.lowPassFilter);
+		mixTube.lowPassFilter.connect(mixTube.highPassFilter);
+		mixTube.highPassFilter.connect(mixTube.gainNode);
+		mixTube.gainNode.connect(mixTube.audioCtx.destination);
+
+		if(mixTube.media){
+			mixTube.media.addEventListener('play', () => callBackground("updateMedia"));
+			mixTube.media.addEventListener('pause', () => callBackground("updateMedia"));
+			mixTube.media.addEventListener('ended', () => callBackground("updateMedia"));
+			mixTube.media.addEventListener('volumechange', () => callBackground("updateMedia"));
+			mixTube.media.addEventListener('ratechange', () => callBackground("updateMedia"));
+			mixTube.media.addEventListener('timeupdate', () => callBackground("updateMedia"));
 			window.addEventListener("beforeunload", () => callBackground("deleteMedia"));
 			callBackground("newMedia");	
 		}

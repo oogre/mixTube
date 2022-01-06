@@ -2,11 +2,12 @@
   mixTube - RenderController.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-28 18:30:42
-  @Last Modified time: 2021-12-31 14:01:42
+  @Last Modified time: 2022-01-04 14:04:05
 \*----------------------------------------*/
 import React from 'react';
 import { on, sendMessage } from './../utilities/com.js';
 import useAnimationFrame from './../utilities/useAnimationFrame.js'
+import Tooltip from './Tooltip.js';
 
 const RenderCue = ({ isCuing, setCuing, track }) => {
 	const [step, setStep] = React.useState(0);
@@ -55,15 +56,17 @@ const RenderCue = ({ isCuing, setCuing, track }) => {
  	}
 
 	return (
-		<button 
-			onMouseUp={cueUpHandler.bind(this, track)} 
-			onMouseDown={cueDownHandler.bind(this, track)}
-		>
-		{	 
-			(!isCuing || (step>>1) % 2 == 0) && 
-				<span>♯</span>
-		}
-		</button>
+		<Tooltip title="cue">
+			<button 
+				onMouseUp={cueUpHandler.bind(this, track)} 
+				onMouseDown={cueDownHandler.bind(this, track)}
+			>
+			{	 
+				(!isCuing || (step>>1) % 2 == 0) && 
+					<span>♯</span>
+			}
+			</button>
+		</Tooltip>
 	);
 }
 
