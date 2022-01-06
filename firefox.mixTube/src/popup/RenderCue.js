@@ -2,7 +2,7 @@
   mixTube - RenderController.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-28 18:30:42
-  @Last Modified time: 2022-01-04 14:04:05
+  @Last Modified time: 2022-01-06 14:11:12
 \*----------------------------------------*/
 import React from 'react';
 import { on, sendMessage } from './../utilities/com.js';
@@ -20,7 +20,7 @@ const RenderCue = ({ isCuing, setCuing, track }) => {
 	const cueUpHandler = (track, event)=>{
 		if(!track.playing)return;
 		cueTime.current.stop = track.currentTime;
-		if(cueTime.current.stop == cueTime.current.start){
+		if(cueTime.current.stop - cueTime.current.start < 0.33){
 			cueTime.current.stop = cueTime.current.start = null;
 			setCuing(false);
 			return;
@@ -55,16 +55,25 @@ const RenderCue = ({ isCuing, setCuing, track }) => {
 		looper.current = null;
  	}
 
+ 	let title;
+ 	if(!isCuing && looper.current == null){
+ 		title = "loop"
+ 	}else if(isCuing && looper.current == null){
+ 		title = "recording"
+ 	}else if (isCuing && looper.current != null){
+ 		title = "play";
+ 	}
+ 	
 	return (
-		<Tooltip title="loop">
+		<Tooltip title={title}>
 			<button 
 				onMouseUp={cueUpHandler.bind(this, track)} 
 				onMouseDown={cueDownHandler.bind(this, track)}
+				style={{
+					opacity : (!isCuing || (step>>1) % 2 == 0) ? "1" : "0"
+				}}
 			>
-			{	 
-				(!isCuing || (step>>1) % 2 == 0) && 
-					<span>♯</span>
-			}
+				<span>♯</span>
 			</button>
 		</Tooltip>
 	);

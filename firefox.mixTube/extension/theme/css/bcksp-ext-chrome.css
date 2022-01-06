@@ -124,7 +124,7 @@ input[type=range]:hover{
 }
 
 .mixTube-tarcklist-seek-bar{
-  height: 4px;
+  height: 25%;
   display: flex;
 }
 
@@ -133,7 +133,6 @@ input[type=range]:hover{
   background: transparent;
   margin: 0;
   height: 100%;
-  transform:translate(0, -5px);
 }
 
 .mixTube-tarcklist-seek-bar input[type=range]::-webkit-slider-runnable-track{
@@ -178,7 +177,14 @@ input[type=range]:hover{
 .mixTube-tarcklist-item{
   position: relative;
   width: calc(100% - 14px);
+  display: flex;
+  flex-flow: column;
+  height: 40px;
 }
+
+/*.mixTube-tarcklist-item.playing{
+  height: 50px;
+}*/
 
 
 
@@ -218,7 +224,7 @@ input[type=range]:hover{
 
 .mixTube-tarcklist-item-title span{
   display: inline-block;
-  padding: 0 20px;
+  padding: 0 0;
 }
 .mixTube-tarcklist-item-menu{
   width: 25px; 
@@ -291,10 +297,11 @@ input[type=range]:hover{
   flex-flow: row;
 }
 .mixTube-subMenu .mixTube-subMenu-item{
-  flex: 1 1 auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 25px;
+  flex-shrink: 0;
 }
 
 
@@ -335,7 +342,7 @@ input[type=range]:hover{
   height: 2px;
   opacity: 0.3;
 }
-.mixTube-tarcklist-item-low-high-pass input[type=range]::-moz-range-thumb,
+
 .mixTube-subMenu input[type=range]::-moz-range-thumb{
   border-radius: 0;
   border: none;
@@ -343,6 +350,14 @@ input[type=range]:hover{
   width: 3px;
   height: 10px;
 }
+.mixTube-tarcklist-item-low-high-pass input[type=range]::-moz-range-thumb{
+  border-radius: 0;
+  border: none;
+  background: #fed;
+  width: 3px;
+  height: 10px;
+}
+
 .mixTube-tarcklist-item-low-high-pass input[type=range]::-moz-range-progress,
 .mixTube-subMenu input[type=range]::-moz-range-progress{
  background: transparent;
@@ -356,29 +371,29 @@ input[type=range]:hover{
 .mixTube-tarcklist-item-low-high-pass:after{
   position: absolute;
   content: '▼ | ▲';
-  word-spacing: 23px;
+  word-spacing: 24px;
   left: 2px;
   top: 14px;
   font-size: 0.7em;
 }
 .mixTube-subMenu-speed:after{
   position: absolute;
-  content: '¼ ½ 3/4 1 5/4 2 4';
-  word-spacing: 3.7px;
-  left: 2px;
-  top: 19px;
+  content: '¼ ½ / 1 / 2 4';
+  word-spacing: 7.2px;
+  left: -2px;
+  top: 17px;
   font-size: 0.7em;
 }
 
 .mixTube-subMenu-speed div:after{
   position: absolute;
   content: '| | | | | | |';
-  word-spacing: 7.2px;
+  word-spacing: 6.9px;
   top: 6px;
   color: white;
   font-size: 0.7em;
   z-index: -1;
-  left: 0;
+  left: -1px;
 }
 .mixTube-channel {
   flex: 1 1 auto;
@@ -411,12 +426,13 @@ input[type=range]:hover{
   align-items: center;
 }
 
-.mixTube-tarcklist > li > ul{
+.mixTube-tarcklist-item-controllers{
   display: flex;
   flex-flow: row;
+  height: 75%;
 }
 
-.mixTube-tarcklist > li > ul > li {
+.mixTube-tarcklist-item-controllers > li {
   white-space: nowrap;
   overflow: hidden;
 }

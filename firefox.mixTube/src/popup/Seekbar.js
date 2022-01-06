@@ -2,7 +2,7 @@
   mixTube - Seekbar.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-30 14:19:33
-  @Last Modified time: 2021-12-30 15:25:06
+  @Last Modified time: 2022-01-06 15:39:00
 \*----------------------------------------*/
 
 import React from 'react';
@@ -13,14 +13,8 @@ const Seekbar = ({ currentTime, duration, progress, onChange=()=>{} }) => {
 	const max = 1000;
 	const val = lerp(min, max, progress);
 	const [mouse, setMouse] = React.useState({x:0, y:0});
-	const mouseEnterHandler = ()=>{
-		setDisplay(true);
-	}
-	const mouseLeaveHandler = ()=>{
-		setDisplay(false);	
-	}
-	const mouseMoveHandler = (event)=>{
 
+	const updateMousePosition = event => {
 		let rect = event.target.getBoundingClientRect();
 		const [x, y] =[(event.clientX - rect.left)/rect.width, (event.clientY - rect.top)/rect.height]
 		setMouse({
@@ -28,6 +22,15 @@ const Seekbar = ({ currentTime, duration, progress, onChange=()=>{} }) => {
 			y : y
 		});
 	}
+
+	const mouseEnterHandler = event => {
+		updateMousePosition(event);
+		setDisplay(true);
+	}
+	const mouseLeaveHandler = ()=>{
+		setDisplay(false);	
+	}
+
 	Number.prototype.toHHMMSS = function () {
 		var sec_num = this; // don't forget the second param
 		var hours   = Math.floor(sec_num / 3600);
@@ -37,17 +40,17 @@ const Seekbar = ({ currentTime, duration, progress, onChange=()=>{} }) => {
 		if (minutes < 10) {minutes = "0"+minutes;}
 		if (seconds < 10) {seconds = "0"+seconds.toFixed(2);}
 		else seconds = seconds.toFixed(3);
-
+		while(seconds.length<6)seconds+="0";
 		return hours+':'+minutes+':'+seconds;
 	}
 
 	const handleChange = event => {
-		onChange(invlerp(min, max, event.target.value)  );
+		onChange(mouse.x);
 	}
 	return (
 		<Tooltip title={`${(mouse.x*duration).toHHMMSS()}`} position={Tooltip.topCursor}>
 			<input 
-				onMouseMove={mouseMoveHandler.bind(this)}
+				onMouseMove={updateMousePosition.bind(this)}
 				type="range" 
 				min={min}
 				max={max}

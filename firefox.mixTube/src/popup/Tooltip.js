@@ -2,24 +2,39 @@
   mixTube - Tooltip.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-01-04 13:33:08
-  @Last Modified time: 2022-01-05 12:28:10
+  @Last Modified time: 2022-01-06 15:26:27
 \*----------------------------------------*/
 import React from 'react';
 
 const Tooltip = ({ title, children, position = Tooltip.topLeft }) => {
 	const [display, setDisplay] = React.useState(false);
-	const [mouse, setMouse] = React.useState({x:0, y:0});
+	const [mouse, setMouse] = React.useState({
+		x:0,
+		y:0
+	});
 	const myRef = React.useRef();
-	const mouseEnterHandler = ()=>{
-		setDisplay(true);
+	const toolTypRef = React.useRef();
+	const timer = React.useRef();
+
+	const mouseEnterHandler = event => {
+		timer.current = setTimeout(()=>{
+			setDisplay(true);	
+		}, 500);
 	}
 	const mouseLeaveHandler = ()=>{
+		clearTimeout(timer.current);
 		setDisplay(false);	
 	}
-	const mouseMoveHandler = (event)=>{
+	const mouseMoveHandler = event => {
+		let wrapperRect = event.target.getBoundingClientRect();
+		let toolTipRect = toolTypRef.current.getBoundingClientRect();
+		let [x, y] =[(event.clientX - wrapperRect.left), (event.clientY - wrapperRect.top)]
+		const offset = [toolTipRect.width/2, toolTipRect.height/2];
+		x = Math.min(Math.max(x, offset[0]), wrapperRect.width-offset[0]);
+		y = Math.min(Math.max(y, offset[1]), wrapperRect.width-offset[1]);
 		setMouse({
-			x : event.pageX,
-			y : event.pageY
+			x : x,
+			y : y
 		});
 	}
 
@@ -35,7 +50,8 @@ const Tooltip = ({ title, children, position = Tooltip.topLeft }) => {
 		background: "gray",
 		padding: "5px",
 		borderRadius: "5px",
-		textTransform: 'capitalize'
+		textTransform: 'capitalize',
+		fontFamily : 'monospace'
 	};
 	if(position == Tooltip.topLeft){
 		style.top = "100%";
@@ -53,7 +69,7 @@ const Tooltip = ({ title, children, position = Tooltip.topLeft }) => {
 	else if(position == Tooltip.bottomCursor){
 		style.bottom = "100%";
 		style.left = mouse.x+"px";
-		style.transform = "translate(-50%, 0)";
+		// style.transform = "translate(-50%, 0)";
 	}
 	else if(position == Tooltip.topCursor){
 		style.top = "100%";
@@ -73,7 +89,7 @@ const Tooltip = ({ title, children, position = Tooltip.topLeft }) => {
 			onMouseMove={mouseMoveHandler.bind(this)}
 			style={{width:"100%"}}
 		>
-			<span 
+			<span ref={toolTypRef}
 				onMouseEnter={mouseLeaveHandler.bind(this)} 
 				className={`noselect mixTube-tooltip ${display ? ``: `hide`}`}
 				style={style}

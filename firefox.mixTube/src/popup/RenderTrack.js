@@ -2,7 +2,7 @@
   mixTube - RenderTrack.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2021-12-30 19:08:09
-  @Last Modified time: 2022-01-06 00:23:36
+  @Last Modified time: 2022-01-06 15:33:17
 \*----------------------------------------*/
 import React from 'react';
 import { on, sendMessage } from './../utilities/com.js';
@@ -115,10 +115,10 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 	}
 
 	return (
-		<li className={`mixTube-tarcklist-item ${track.muted ? `muted` : "" }`}>
-			<ul>
+		<li className={`mixTube-tarcklist-item ${track.muted ? `muted` : "" } ${track.playing ? `playing` : "" }`}>
+			<ul className="mixTube-tarcklist-item-controllers" >
 				<li className="mixTube-tarcklist-item-play-pause">
-					<Tooltip title={track.playing ? "pause" : "play"}>
+					<Tooltip title={(!track.playing || cuing) ? "play" : "pause"}>
 						<button onClick={playPauseHandler.bind(this, track)}>
 							<span>{track.playing ? '▶' : '▷'}</span>
 						</button>
@@ -132,10 +132,15 @@ const RenderTrack = ({track, onSwitchChannel}) => {
 					/>
 				</li>
 				<li className="mixTube-tarcklist-item-title">
-					<Marquee 
-						run={track.playing ? 1 : 0}
-						text={track.title}
-					/>
+					{	
+						track.playing ? 
+							<Marquee 
+								text={track.title}
+							/>
+						:
+							track.title
+					}
+					
 				</li>
 				<li className="mixTube-tarcklist-item-low-high-pass">
 					<RenderPassFilter 
