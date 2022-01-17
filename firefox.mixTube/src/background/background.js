@@ -2,7 +2,7 @@
   runtime-examples - background.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-27 23:11:57
-  @Last Modified time: 2022-01-06 19:38:35
+  @Last Modified time: 2022-01-17 10:08:22
 \*----------------------------------------*/
 
 import Data from "./../utilities/Data.js";
@@ -19,13 +19,13 @@ import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivated
 
 // runtimeSetUninstallURL(config.getLogoutUrl());
 
-runtimeOnSuspendAddListener(() => {
-	medias
-	.map(media => {
-		tabsSendMessage(media.tabId, { action : "unLoad" })
-	});
+// runtimeOnSuspendAddListener(() => {
+// 	medias
+// 	.map(media => {
+// 		tabsSendMessage(media.tabId, { action : "unLoad" })
+// 	});
+// });
 
-})
 tabsOnActivatedAddListener(({tabId}) => {
 	sendMessageToTab("closePopup")
 		.then(()=>{})

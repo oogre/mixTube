@@ -2,7 +2,7 @@
   bcksp.es - popupManager.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2019-04-17 12:28:31
-  @Last Modified time: 2022-01-06 16:07:34
+  @Last Modified time: 2022-01-17 18:10:37
 \*----------------------------------------*/
 import { runtimeGetURL } from './../utilities/browser.js';
 import { sendMessage } from './../utilities/com.js';
