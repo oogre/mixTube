@@ -2,7 +2,7 @@
   bcksp.es - browser.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2019-01-04 14:29:49
-  @Last Modified time: 2021-12-30 21:48:29
+  @Last Modified time: 2022-01-06 20:14:08
 \*----------------------------------------*/
 import { isNull, isUndefined, isFunction } from 'underscore';
 
@@ -93,6 +93,11 @@ export function runtimeSetUninstallURL(url){
 
 export function runtimeOnInstalledAddListener(req){
 	return browser.runtime.onInstalled.addListener(req);
+}
+
+export function runtimeOnSuspendAddListener(req){
+	console.log(browser.runtime);
+	return browser.runtime.OnRestartRequiredReason.addListener(req);
 }
 
 export function runtimeOnMessageAddListener(req){

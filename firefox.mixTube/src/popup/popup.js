@@ -2,7 +2,7 @@
   bcksp.es - popup.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-29 00:52:06
-  @Last Modified time: 2022-01-04 13:35:37
+  @Last Modified time: 2022-01-06 17:09:58
 \*----------------------------------------*/
 
 import React from 'react';
@@ -59,7 +59,7 @@ const Popup = ({connected, loggedIn}) => {
 	}
 
 	const closeHandler = ()=>{
-		sendMessage("closePopup")
+		sendMessage("disablePopup")
 			.then(() => {})
 			.catch(e => error(e));
 	}
@@ -93,19 +93,9 @@ const Popup = ({connected, loggedIn}) => {
 
 	return (
 		<div className="mixTube-popup">
-			<RenderChannels 
-				onSwitchChannel={switchChannelHandler.bind(this)} 
-				medias={medias} 
-				left={side[0]} 
-				right={side[1]}
-			/>
-			<RenderMixer 
-				lvl={lvl}
-				onVolumeChange={handleVolumeChange.bind(this)}
-			/>
 			<div className="mixTube-title-bar">
 				<span className="mixTube-texture-bar"></span>
-				<span className="mixTube-title-bar-title noselect" onMouseDown={mouseDownHandler.bind(this)}>
+				<span className="mixTube-title-bar-title noselect">
 					mixTube
 				</span>
 				<button 
@@ -115,6 +105,16 @@ const Popup = ({connected, loggedIn}) => {
 					✖
 				</button>
 			</div>
+			<RenderMixer 
+				lvl={lvl}
+				onVolumeChange={handleVolumeChange.bind(this)}
+			/>
+			<RenderChannels 
+				onSwitchChannel={switchChannelHandler.bind(this)} 
+				medias={medias} 
+				left={side[0]} 
+				right={side[1]}
+			/>
 		</div>
 	);
 }

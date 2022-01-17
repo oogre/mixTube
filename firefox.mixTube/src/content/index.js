@@ -2,7 +2,7 @@
   runtime-examples - content.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-28 03:12:11
-  @Last Modified time: 2022-01-06 00:50:49
+  @Last Modified time: 2022-01-06 19:39:44
 \*----------------------------------------*/
 import { onReady } from './../utilities/onReady.js';
 import { on, sendMessage } from './../utilities/com.js';
@@ -12,7 +12,7 @@ import MixTube from './MixTube.js';
 import { Timeout } from './../utilities/tools.js';
 import Contextes from './Contextes.js';
 
-const getMedia = async () => {
+const handlePlateform = async () => {
 	const location = window.location.toString();
 	const context = Contextes.find(({regexp}) => regexp.test(location));
 	if(!context) throw new Error("Unknow context");
@@ -21,13 +21,21 @@ const getMedia = async () => {
 
 onReady( async () => {
 	try{
+		const enabled = true;
 		const settings = await sendMessage("getSettings");
-		const [media, title] = await getMedia();
+		const [media, title, btn, area] = await handlePlateform();
 		const mt = new MixTube(media, title);
 		mt.onMediaUpdate(evt => sendMessage("updateMedia", evt));
 		mt.onKill(evt => sendMessage("deleteMedia", evt));
 		sendMessage("newMedia", mt.toObject());
-		
+
+		area.addEventListener('mouseenter', evt => enabled && openPopup() );
+		area.addEventListener('mouseleave', evt => closePopup() );
+		btn.addEventListener('click', evt => {
+			enabled = true;
+			openPopup();
+		});
+
 		on("setSize", (data, resolve) =>{
 			setHeight(data);
 			resolve(true);
@@ -35,6 +43,12 @@ onReady( async () => {
 
 		on("closePopup", (data, resolve) =>{
 			closePopup();
+			resolve(true);
+		});
+
+		on("disablePopup", (data, resolve) =>{
+			closePopup();
+			enabled = false;
 			resolve(true);
 		});
 

@@ -46,6 +46,7 @@ ul {
   height: 25px;
   position: relative;
   text-align: center;
+  padding-top: 8px;
 }
 
 .noselect {
@@ -70,15 +71,14 @@ ul {
   width: calc(100% - 23px);
 }
 .mixTube-title-bar-title{
-  cursor: ns-resize;
   position: absolute;
-  top: 0;
   text-align: center;
   background: #161b22;
   padding: 0 20px;
   transform: translate(-50%, 0) skew(-8deg, -4deg);
   font-size: 1.2em;
   height: 9px;
+  top: 8px;
 }
 
 .mixTube-title-bar-close{
@@ -86,7 +86,7 @@ ul {
   background: transparent;
   color: #fed;
   position: absolute;
-  top: -4px;
+  top: 4px;
   right: 7px;
   padding: 0;
   cursor: pointer;
@@ -375,6 +375,7 @@ input[type=range]:hover{
   left: 2px;
   top: 14px;
   font-size: 0.7em;
+  pointer-events: none;
 }
 .mixTube-subMenu-speed:after{
   position: absolute;
@@ -383,6 +384,7 @@ input[type=range]:hover{
   left: -2px;
   top: 17px;
   font-size: 0.7em;
+  pointer-events: none;
 }
 
 .mixTube-subMenu-speed div:after{
@@ -394,6 +396,7 @@ input[type=range]:hover{
   font-size: 0.7em;
   z-index: -1;
   left: -1px;
+  pointer-events: none;
 }
 .mixTube-channel {
   flex: 1 1 auto;

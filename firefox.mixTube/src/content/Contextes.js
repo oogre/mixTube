@@ -5,7 +5,6 @@
   @Last Modified time: 2022-01-06 00:50:49
 \*----------------------------------------*/
 import { onDomChange } from './../utilities/onDomChange.js';
-
 const Contextes = [{
 	name : "youtube",
 	regexp : RegExp(/youtube\.com\/watch/ig),
@@ -15,7 +14,25 @@ const Contextes = [{
 		}
 		const media = document.querySelector("video");
 		const title = document.querySelector("h1.ytd-video-primary-info-renderer").innerText;
-		return [media, title];
+
+		const mixTubeArea = document.querySelector("ytd-player")
+		//.addEventListener('mouseenter', openPopup);
+
+		//document.querySelector("ytd-player")
+		//.addEventListener('mouseleave', closePopup);
+
+		const mixTubeBtn = document.createElement('button');
+		mixTubeBtn.classList.add("ytp-mixTube-button"); 
+		mixTubeBtn.classList.add("ytp-button");
+		mixTubeBtn.title =  "MixTube is on/off";
+		/* mixTubeBtn.addEventListener('click', () => {
+			mixTube.disable = false;
+			openPopup();
+		}); */
+		document.querySelector(".ytp-right-controls").append(mixTubeBtn);
+		document.querySelector("#contentContainer").style.display = "none";
+
+		return [media, title, mixTubeBtn, mixTubeArea];
 	}
 },{
 	name : "nothing",
