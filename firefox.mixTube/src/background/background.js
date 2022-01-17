@@ -2,14 +2,14 @@
   runtime-examples - background.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-27 23:11:57
-  @Last Modified time: 2022-01-17 10:08:22
+  @Last Modified time: 2022-01-17 21:03:35
 \*----------------------------------------*/
 
 import Data from "./../utilities/Data.js";
 
 import { log, info, warn, error } from './../utilities/log.js';
 import { on, sendMessage, sendMessageToTab } from './../utilities/com.js';
-import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivatedAddListener, runtimeOnInstalledAddListener, runtimeSetUninstallURL, runtimeOnSuspendAddListener, browserActionOnClickAddListener } from './../utilities/browser.js';
+import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivatedAddListener, runtimeOnInstalledAddListener, runtimeSetUninstallURL, browserActionOnClickAddListener } from './../utilities/browser.js';
 
 // runtimeOnInstalledAddListener(data => {
 // 	if(data.reason == "install"){
@@ -75,8 +75,6 @@ on("updateMedia", (data, resolve, reject, sender) => {
 });
 
 
-
-
 on("disablePopup", (data, resolve)=>{
 	sendMessageToTab("disablePopup")
 		.then(()=>{})
@@ -109,8 +107,16 @@ on("deleteMedia", (data, resolve, reject, sender) => {
 	resolve(true);
 });
 
+
+on("closePopup", (data, resolve, reject, sender)=>{
+	sendMessageToTab("closePopup")
+		.then(()=>{})
+		.catch(()=>{});
+	resolve(true);
+});
+
 on("getMedias", (data, resolve, reject, sender) => {
-	resolve({medias, side});
+	resolve({medias, side, lvl});
 });
 
 on("getSide", (data, resolve, reject, sender) => {

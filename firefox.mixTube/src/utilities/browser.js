@@ -2,7 +2,7 @@
   bcksp.es - browser.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2019-01-04 14:29:49
-  @Last Modified time: 2022-01-17 10:08:06
+  @Last Modified time: 2022-01-17 21:03:44
 \*----------------------------------------*/
 import { isNull, isUndefined, isFunction } from 'underscore';
 
