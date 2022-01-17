@@ -14,24 +14,13 @@ const Contextes = [{
 		}
 		const media = document.querySelector("video");
 		const title = document.querySelector("h1.ytd-video-primary-info-renderer").innerText;
-
-		const mixTubeArea = document.querySelector("ytd-player")
-		//.addEventListener('mouseenter', openPopup);
-
-		//document.querySelector("ytd-player")
-		//.addEventListener('mouseleave', closePopup);
-
+		const mixTubeArea = document.querySelector("ytd-player");
 		const mixTubeBtn = document.createElement('button');
 		mixTubeBtn.classList.add("ytp-mixTube-button"); 
 		mixTubeBtn.classList.add("ytp-button");
-		mixTubeBtn.title =  "MixTube is on/off";
-		/* mixTubeBtn.addEventListener('click', () => {
-			mixTube.disable = false;
-			openPopup();
-		}); */
+		mixTubeBtn.title = "MixTube is on/off";
 		document.querySelector(".ytp-right-controls").append(mixTubeBtn);
 		document.querySelector("#contentContainer").style.display = "none";
-
 		return [media, title, mixTubeBtn, mixTubeArea];
 	}
 },{

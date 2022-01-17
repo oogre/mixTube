@@ -9,7 +9,7 @@ import Data from "./../utilities/Data.js";
 
 import { log, info, warn, error } from './../utilities/log.js';
 import { on, sendMessage, sendMessageToTab } from './../utilities/com.js';
-import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivatedAddListener, runtimeOnInstalledAddListener, runtimeSetUninstallURL, runtimeOnSuspendAddListener, browserActionOnClickAddListener } from './../utilities/browser.js';
+import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivatedAddListener, runtimeOnInstalledAddListener, runtimeSetUninstallURL, browserActionOnClickAddListener } from './../utilities/browser.js';
 
 // runtimeOnInstalledAddListener(data => {
 // 	if(data.reason == "install"){
@@ -19,13 +19,6 @@ import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivated
 
 // runtimeSetUninstallURL(config.getLogoutUrl());
 
-runtimeOnSuspendAddListener(() => {
-	medias
-	.map(media => {
-		tabsSendMessage(media.tabId, { action : "unLoad" })
-	});
-
-})
 tabsOnActivatedAddListener(({tabId}) => {
 	sendMessageToTab("closePopup")
 		.then(()=>{})

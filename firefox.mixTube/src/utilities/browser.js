@@ -95,11 +95,6 @@ export function runtimeOnInstalledAddListener(req){
 	return browser.runtime.onInstalled.addListener(req);
 }
 
-export function runtimeOnSuspendAddListener(req){
-	console.log(browser.runtime);
-	return browser.runtime.OnRestartRequiredReason.addListener(req);
-}
-
 export function runtimeOnMessageAddListener(req){
 	return browser.runtime.onMessage.addListener(req);
 }
