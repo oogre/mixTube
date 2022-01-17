@@ -2,7 +2,7 @@
   runtime-examples - content.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-28 03:12:11
-  @Last Modified time: 2022-01-06 19:39:44
+  @Last Modified time: 2022-01-17 22:27:59
 \*----------------------------------------*/
 import { onReady } from './../utilities/onReady.js';
 import { on, sendMessage } from './../utilities/com.js';
@@ -21,23 +21,22 @@ const handlePlateform = async () => {
 
 onReady( async () => {
 	try{
-		const enabled = true;
-		const settings = await sendMessage("getSettings");
+		let settings = await sendMessage("getSettings");
 		const [media, title, btn, area] = await handlePlateform();
 		const mt = new MixTube(media, title);
 		mt.onMediaUpdate(evt => sendMessage("updateMedia", evt));
 		mt.onKill(evt => sendMessage("deleteMedia", evt));
 		sendMessage("newMedia", mt.toObject());
 
-		area.addEventListener('mouseenter', evt => enabled && openPopup() );
+		area.addEventListener('mouseenter', evt => settings.enabled && openPopup() );
 		area.addEventListener('mouseleave', evt => closePopup() );
 		btn.addEventListener('click', evt => {
-			enabled = true;
+			sendMessage("enablePopup");
 			openPopup();
 		});
 
-		on("setSize", (data, resolve) =>{
-			setHeight(data);
+		on("settings", (data, resolve) =>{
+			settings = data;
 			resolve(true);
 		});
 
@@ -47,8 +46,8 @@ onReady( async () => {
 		});
 
 		on("disablePopup", (data, resolve) =>{
+			
 			closePopup();
-			enabled = false;
 			resolve(true);
 		});
 

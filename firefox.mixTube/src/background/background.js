@@ -2,7 +2,7 @@
   runtime-examples - background.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-27 23:11:57
-  @Last Modified time: 2022-01-17 21:03:35
+  @Last Modified time: 2022-01-17 22:26:49
 \*----------------------------------------*/
 
 import Data from "./../utilities/Data.js";
@@ -33,14 +33,26 @@ tabsOnActivatedAddListener(({tabId}) => {
 });
 
 browserActionOnClickAddListener(tab => {
+	settings.enabled = true;
+	settingsTransmit();
 	sendMessageToTab("togglePopup")
 	.then(()=>{})
 	.catch(()=>{});
 });
 
 const settings = {
-	size : 200
+	size : 200,
+	enable : true
 };
+
+const settingsTransmit = ()=>{
+	medias
+	.map(media => {
+		tabsSendMessage(media.tabId, { action : "settings", data : settings })
+	});
+}
+
+
 const medias = [];
 const side = [[], []];
 let lvl = 0.5;
@@ -76,9 +88,18 @@ on("updateMedia", (data, resolve, reject, sender) => {
 
 
 on("disablePopup", (data, resolve)=>{
+	settings.enabled = false;
+	settingsTransmit();
 	sendMessageToTab("disablePopup")
 		.then(()=>{})
 		.catch(()=>{});
+	resolve(true);
+});
+
+
+on("enablePopup", (data, resolve)=>{
+	settings.enabled = true;
+	settingsTransmit();
 	resolve(true);
 });
 
@@ -188,8 +209,9 @@ on("getSettings", (data, resolve, reject, sender) => {
 });
 
 on("setSize", (height, resolve, reject, sender) => {
-	settings.size = height
-	tabsSendMessage(sender.tab.id, { action : "setSize", data : height  })
+	settings.size = height;
+	settingsTransmit();
+	//tabsSendMessage(sender.tab.id, { action : "setSize", data : height  })
 	resolve(true);
 });
 
