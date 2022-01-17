@@ -2,14 +2,14 @@
   runtime-examples - background.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-27 23:11:57
-  @Last Modified time: 2022-01-06 00:29:25
+  @Last Modified time: 2022-01-06 19:38:35
 \*----------------------------------------*/
 
 import Data from "./../utilities/Data.js";
 
 import { log, info, warn, error } from './../utilities/log.js';
 import { on, sendMessage, sendMessageToTab } from './../utilities/com.js';
-import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivatedAddListener, runtimeOnInstalledAddListener, runtimeSetUninstallURL, browserActionOnClickAddListener } from './../utilities/browser.js';
+import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivatedAddListener, runtimeOnInstalledAddListener, runtimeSetUninstallURL, runtimeOnSuspendAddListener, browserActionOnClickAddListener } from './../utilities/browser.js';
 
 // runtimeOnInstalledAddListener(data => {
 // 	if(data.reason == "install"){
@@ -19,6 +19,13 @@ import { tabsRemove, tabsCreate, tabsHighlight, tabsSendMessage, tabsOnActivated
 
 // runtimeSetUninstallURL(config.getLogoutUrl());
 
+runtimeOnSuspendAddListener(() => {
+	medias
+	.map(media => {
+		tabsSendMessage(media.tabId, { action : "unLoad" })
+	});
+
+})
 tabsOnActivatedAddListener(({tabId}) => {
 	sendMessageToTab("closePopup")
 		.then(()=>{})
@@ -47,7 +54,6 @@ on("newMedia", (data, resolve, reject, sender) => {
 	}
 	medias[sender.tab.id] = data;
 
-	console.log(medias);
 	sendMessageToTab("medias", {medias, side, lvl})
 	.then(()=>{})
 	.catch(()=>{});
@@ -69,7 +75,16 @@ on("updateMedia", (data, resolve, reject, sender) => {
 });
 
 
-on("closePopup", ()=>{
+
+
+on("disablePopup", (data, resolve)=>{
+	sendMessageToTab("disablePopup")
+		.then(()=>{})
+		.catch(()=>{});
+	resolve(true);
+});
+
+on("closePopup", (data, resolve)=>{
 	sendMessageToTab("closePopup")
 		.then(()=>{})
 		.catch(()=>{});
@@ -189,8 +204,6 @@ on("pause", (data, resolve, reject, sender) => {
 
 on("passFilter", (data, resolve, reject, sender) => {
 	tabsSendMessage(data.tabId, { action : "passFilter", data })
-	.then(d => console.log(d))
-	.catch(d => console.error(d))
 	resolve(true);
 });
 

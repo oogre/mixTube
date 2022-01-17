@@ -2,18 +2,19 @@
   bcksp.es - popupManager.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2019-04-17 12:28:31
-  @Last Modified time: 2022-01-03 23:12:46
+  @Last Modified time: 2022-01-06 16:07:34
 \*----------------------------------------*/
 import { runtimeGetURL } from './../utilities/browser.js';
 import { sendMessage } from './../utilities/com.js';
 
 export function openPopup(){
+	if(document.querySelector("#bcksp-es-frame"))return;
 	let popupIframe = document.createElement('iframe');
 	// Must be declared at web_accessible_resources in manifest.json
 	popupIframe.src = runtimeGetURL('popup.html');
 	popupIframe.name = popupIframe.id = "bcksp-es-frame";
 	popupIframe.className = "bcksp-es-frame";
-	document.body.prepend(popupIframe);
+	document.querySelector("#movie_player").append(popupIframe);
 }
 
 export function closePopup(popupIframe = document.querySelector("#bcksp-es-frame")){

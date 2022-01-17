@@ -2,7 +2,7 @@
   runtime-examples - content.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2018-05-28 03:12:11
-  @Last Modified time: 2022-01-06 00:50:49
+  @Last Modified time: 2022-01-06 19:39:44
 \*----------------------------------------*/
 import {onReady} from './../utilities/onReady.js';
 import { on, sendMessage } from './../utilities/com.js';
@@ -48,6 +48,12 @@ on("closePopup", (data, resolve) =>{
 	closePopup();
 	resolve(true);
 });
+on("disablePopup", (data, resolve) =>{
+	if(window != window.top)return;
+	mixTube.disable = true;
+	closePopup();
+	resolve(true);
+});
 
 on("openPopup", (data, resolve) =>{
 	if(window != window.top)return;
@@ -57,6 +63,7 @@ on("openPopup", (data, resolve) =>{
 
 on("togglePopup", (data, resolve) =>{
 	if(window != window.top)return;
+	mixTube.disable = false;
 	togglePopup();
 	resolve(true);
 });
@@ -106,6 +113,15 @@ on("gain", (data, resolve) =>{
 	resolve(true);
 });
 
+on("unLoad", (data, resolve) =>{
+	console.log("unLoad");
+	mixTube.source.disconnect(mixTube.lowPassFilter);
+	mixTube.lowPassFilter.disconnect(mixTube.highPassFilter);
+	mixTube.highPassFilter.disconnect(mixTube.gainNode);
+	mixTube.gainNode.disconnect(mixTube.audioCtx.destination);
+	resolve(true);
+});
+
 sendMessage("getSettings")
 .then(data => {
 	console.log(data);
@@ -126,7 +142,7 @@ onReady( async ()=>{
 		mixTube.media = document.querySelector("video");
 
 		mixTube.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-		const source = mixTube.audioCtx.createMediaElementSource(mixTube.media);
+		mixTube.source = mixTube.audioCtx.createMediaElementSource(mixTube.media);
 		
 		mixTube.gainNode = mixTube.audioCtx.createGain();
 		mixTube.lowPassFilter = mixTube.audioCtx.createBiquadFilter();
@@ -137,7 +153,7 @@ onReady( async ()=>{
 		mixTube.highPassFilter.type = "highshelf";
 		mixTube.highPassFilter.frequency.value = 1000;
 		mixTube.highPassFilter.gain.value = 0;
-		source.connect(mixTube.lowPassFilter);
+		mixTube.source.connect(mixTube.lowPassFilter);
 		mixTube.lowPassFilter.connect(mixTube.highPassFilter);
 		mixTube.highPassFilter.connect(mixTube.gainNode);
 		mixTube.gainNode.connect(mixTube.audioCtx.destination);
@@ -152,6 +168,29 @@ onReady( async ()=>{
 			window.addEventListener("beforeunload", () => callBackground("deleteMedia"));
 			callBackground("newMedia");	
 		}
+
+		document.querySelector("ytd-player")
+			.addEventListener('mouseenter', () => {
+				if(!mixTube.disable){
+					openPopup();
+				}
+			});
+
+		document.querySelector("ytd-player")
+			.addEventListener('mouseleave', (event) => {
+				closePopup();
+			});
+
+		const mixTubeBtn = document.createElement('button');
+		mixTubeBtn.classList.add("ytp-mixTube-button"); 
+		mixTubeBtn.classList.add("ytp-button");
+		mixTubeBtn.title =  "MixTube is on/off";
+		mixTubeBtn.addEventListener('click', () => {
+			mixTube.disable = false;
+			openPopup();
+		});
+		document.querySelector(".ytp-right-controls").append(mixTubeBtn);
+		document.querySelector("#contentContainer").style.display = "none";
 	}
 });
 
