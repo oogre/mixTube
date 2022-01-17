@@ -10,6 +10,11 @@ import { sendMessage } from './com.js';
 
 export { filter, reduce, intersection, last, findWhere, difference, uniq, mapObject } from 'underscore';
 
+export async function Timeout (time){
+    return new Promise((resolve, reject)=>{
+        setTimeout(()=>reject("Timeout"), time);
+    });
+}
 
 export function mobileAndTabletcheck() {
   var check = false;

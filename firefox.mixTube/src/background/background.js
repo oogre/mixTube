@@ -68,14 +68,6 @@ on("updateMedia", (data, resolve, reject, sender) => {
 	resolve(true);
 });
 
-
-on("closePopup", ()=>{
-	sendMessageToTab("closePopup")
-		.then(()=>{})
-		.catch(()=>{});
-	resolve(true);
-});
-
 on("deleteMedia", (data, resolve, reject, sender) => {
 	data.tabId = sender.tab.id;
 	data.tabIndex = sender.tab.index;
@@ -94,8 +86,16 @@ on("deleteMedia", (data, resolve, reject, sender) => {
 	resolve(true);
 });
 
+
+on("closePopup", (data, resolve, reject, sender)=>{
+	sendMessageToTab("closePopup")
+		.then(()=>{})
+		.catch(()=>{});
+	resolve(true);
+});
+
 on("getMedias", (data, resolve, reject, sender) => {
-	resolve({medias, side});
+	resolve({medias, side, lvl});
 });
 
 on("getSide", (data, resolve, reject, sender) => {
